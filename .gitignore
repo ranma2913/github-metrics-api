@@ -1,33 +1,55 @@
-HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+############################################
+#Generic File and Folder ignors:
+*.bak
+.*.bak
+RemoteSystemsTempFiles/*
+.DS_Store
+workspace/
+workingDir/
+data/
+logs/
+*.log
+*.log*
+.git/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+############################################
+# Build Stuff:
+mvnw
+mvnw.cmd
+.mvn/
+gradlew
+gradlew.bat
+.gradle/
 build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+target/
+bin/
+node/
+node_modules/
+.angular/*
+app-bundle.js
+certs/*Ness*.jks
+pom.xml.versionsBackup
+# infrastructure ignores
+infrastructure/**/*config.y*ml
+infrastructure/**/*output.y*ml
 
-### VS Code ###
+############################################
+# IDE/Editor Files
+.tern-project
+.factorypath
+.settings/
+Servers/*
+.metadata/*
+.recommenders/*
+.classpath
+.project
 .vscode/
+*.eml
+*.iml
+.idea/*
+!.idea/runConfigurations
+!.idea/codeStyles
+!.idea/google-java-format.xml
+
+############################################

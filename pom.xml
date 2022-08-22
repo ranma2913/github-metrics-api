@@ -16,9 +16,13 @@
 
   <properties>
     <java.version>17</java.version>
-
+    <gmavenplus-plugin.version>1.13.1</gmavenplus-plugin.version><!-- Check the latest version: https://mvnrepository.com/artifact/org.codehaus.gmavenplus/gmavenplus-plugin -->
     <spock.version>2.2-M3-groovy-4.0</spock.version><!-- Check the latest version: https://mvnrepository.com/artifact/org.spockframework/spock-core -->
-
+    <!--    <junit.version>4.13</junit.version>-->
+    <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version><!-- Check the latest version: https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
+    <!--    <junit-vintage-engine.version>5.9.0</junit-vintage-engine.version>&lt;!&ndash; Check latest version: https://mvnrepository.com/artifact/org.junit.vintage/junit-vintage-engine &ndash;&gt;-->
+    <!-- todo temp downgrade git-commit-id-plugin.version=4.9.10 -->
+    <git-commit-id-plugin.version>4.9.10</git-commit-id-plugin.version>
   </properties>
 
   <dependencies>
@@ -39,10 +43,6 @@
       <artifactId>spring-boot-starter-webflux</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.groovy</groupId>
-      <artifactId>groovy</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-configuration-processor</artifactId>
       <optional>true</optional>
@@ -50,7 +50,6 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <optional>true</optional>
     </dependency>
 
     <dependency>
@@ -67,10 +66,22 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>android-json</artifactId>
+          <groupId>com.vaadin.external.google</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
+      <version>${junit-jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-launcher</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -93,45 +104,142 @@
 
   </dependencies>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${junit-jupiter.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <build>
+    <finalName>app</finalName>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${project.parent.version}</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>${maven-resources-plugin.version}</version>
         <configuration>
-          <excludes>
-            <exclude>
-              <groupId>org.projectlombok</groupId>
-              <artifactId>lombok</artifactId>
-            </exclude>
-          </excludes>
+          <delimiters>
+            <delimiter>@</delimiter>
+          </delimiters>
+          <useDefaultDelimiters>false</useDefaultDelimiters>
         </configuration>
       </plugin>
 
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
-        <version>1.13.1</version>
+        <version>${gmavenplus-plugin.version}</version>
         <executions>
           <execution>
             <goals>
-              <goal>addSources</goal>
               <goal>addTestSources</goal>
-              <goal>generateStubs</goal>
-              <goal>compile</goal>
-              <goal>generateTestStubs</goal>
               <goal>compileTests</goal>
-              <goal>removeStubs</goal>
-              <goal>removeTestStubs</goal>
             </goals>
           </execution>
         </executions>
       </plugin>
 
       <plugin>
+        <groupId>pl.project13.maven</groupId>
+        <artifactId>git-commit-id-plugin</artifactId>
+        <version>${git-commit-id-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>revision</id>
+            <goals>
+              <goal>revision</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+          <prefix>git</prefix>
+          <verbose>false</verbose>
+          <generateGitPropertiesFile>true</generateGitPropertiesFile>
+          <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
+          <gitDescribe>
+            <skip>false</skip>
+            <always>false</always>
+            <dirty>-dirty</dirty>
+          </gitDescribe>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>${maven-clean-plugin.version}</version>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>infrastructure</directory>
+              <includes>
+                <include>**/*config.y*ml</include>
+                <include>**/*output.y*ml</include>
+                <include>**/*config.y*ml.bak</include>
+                <include>**/*output.y*ml.bak</include>
+              </includes>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>src/test/taurus</directory>
+              <includes>
+                <include>artifacts</include>
+                <include>jmeter.log</include>
+                <include>performance-plugin-stats.*</include>
+                <include>effective.json</include>
+                <include>effective.yml</include>
+                <include>xunit.xml</include>
+              </includes>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>logs</directory>
+              <includes>
+                <include>**</include>
+              </includes>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>.</directory>
+              <includes>
+                <include>velocity.log</include>
+              </includes>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven-surefire-plugin.version}</version>
+        <dependencies>
+          <!--          <dependency>-->
+          <!--            <groupId>org.junit.vintage</groupId>-->
+          <!--            <artifactId>junit-vintage-engine</artifactId>-->
+          <!--            <version>${junit-vintage-engine.version}</version>-->
+          <!--          </dependency>-->
+        </dependencies>
         <configuration>
           <parallel>classes</parallel>
           <threadCount>32</threadCount>
@@ -142,9 +250,10 @@
             <include>**/*Spec.java</include>
             <include>**/*Test.java</include>
           </includes>
-          <useSystemClassLoader>false</useSystemClassLoader>
+          <!--          <useSystemClassLoader>false</useSystemClassLoader>-->
         </configuration>
       </plugin>
+
     </plugins>
   </build>
 

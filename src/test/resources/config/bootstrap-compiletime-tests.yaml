@@ -1,0 +1,5 @@
+spring:
+  cloud.vault:
+    ssl:
+      #      Override the location of spring.cloud.vault.ssl.trust-store so it works for Unit Tests.
+      trust-store: ${VAULT_TRUSTSTORE:file:certs/standard_trusts.jks}
