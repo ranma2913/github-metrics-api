@@ -48,6 +48,7 @@ public class VitalsFileService {
     if (vitalsFile.isPresent()) {
       log.info("vitals.yaml exists in repo {}", repo.getFullName());
     } else {
+      log.warn("vitals.yaml not found in repo {}", repo.getFullName());
       // todo write vitals file
     }
     return repo;

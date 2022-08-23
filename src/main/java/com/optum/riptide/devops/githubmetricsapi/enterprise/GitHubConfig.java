@@ -1,7 +1,6 @@
 package com.optum.riptide.devops.githubmetricsapi.enterprise;
 
 import org.kohsuke.github.GHOrganization;
-import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
-import java.util.List;
 
 @Configuration
 public class GitHubConfig {
@@ -25,9 +23,6 @@ public class GitHubConfig {
 
   @Value("${credentials_MS_ID}")
   private String githubId;
-
-  @Value("${credentials_MS_ID}")
-  private String githubDefaultOrg;
 
   @Bean
   public GitHub githubEnterprise() throws IOException {
@@ -47,14 +42,5 @@ public class GitHubConfig {
     GHOrganization githubEnterpriseOrg =
         githubEnterprise.getOrganization(githubEnterpriseDefaultOrg);
     return githubEnterpriseOrg;
-  }
-
-  @Bean
-  @Autowired
-  public List<GHRepository> githubEnterpriseRepositories(GHOrganization githubEnterpriseOrg)
-      throws IOException {
-    // pageSize – size for each page of items returned by GitHub. Maximum page size is 100.
-    List<GHRepository> repositories = githubEnterpriseOrg.listRepositories(100).toList();
-    return repositories;
   }
 }
