@@ -1,83 +1,33 @@
 package com.optum.riptide.devops.githubmetricsapi.vitalsfile;
 
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 @Data
 public class VitalsFile {
-  private String apiVersion;
-  private Metadata metadata;
-
-  public String getApiVersion() {
-    return apiVersion;
-  }
-
-  public void setApiVersion(String apiVersion) {
-    this.apiVersion = apiVersion;
-  }
-
-  public Metadata getMetadata() {
-    return metadata;
-  }
-
-  public void setMetadata(Metadata metadata) {
-    this.metadata = metadata;
-  }
+  private String apiVersion = "v1";
+  private Metadata metadata = new Metadata();
 
   @Data
   public class Metadata {
     private String askId = "UHGWM110-017197";
     private String caAgileId = "poc";
-    private String projectKey;
-    private String projectFriendlyName;
+    private String projectKey = "poc";
+    private String projectFriendlyName = "poc";
     private String componentType = "code";
     private String targetQG = "ADOPTION";
 
-    public String getAskId() {
-      return askId;
-    }
-
-    public void setAskId(String askId) {
-      this.askId = askId;
-    }
-
-    public String getCaAgileId() {
-      return caAgileId;
-    }
-
     public void setCaAgileId(String caAgileId) {
-      this.caAgileId = caAgileId;
-    }
-
-    public String getProjectKey() {
-      return projectKey;
+      this.caAgileId = StringUtils.isNotBlank(caAgileId) ? caAgileId : "poc";
     }
 
     public void setProjectKey(String projectKey) {
-      this.projectKey = projectKey;
-    }
-
-    public String getProjectFriendlyName() {
-      return projectFriendlyName;
+      this.projectKey = StringUtils.isNotBlank(projectKey) ? projectKey : "poc";
     }
 
     public void setProjectFriendlyName(String projectFriendlyName) {
-      this.projectFriendlyName = projectFriendlyName;
-    }
-
-    public String getComponentType() {
-      return componentType;
-    }
-
-    public void setComponentType(String componentType) {
-      this.componentType = componentType;
-    }
-
-    public String getTargetQG() {
-      return targetQG;
-    }
-
-    public void setTargetQG(String targetQG) {
-      this.targetQG = targetQG;
+      this.projectFriendlyName =
+          StringUtils.isNotBlank(projectFriendlyName) ? projectFriendlyName : "poc";
     }
   }
 }

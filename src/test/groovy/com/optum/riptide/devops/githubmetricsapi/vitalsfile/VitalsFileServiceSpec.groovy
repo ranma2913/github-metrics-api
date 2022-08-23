@@ -15,15 +15,8 @@ class VitalsFileServiceSpec extends Specification {
   @Autowired
   VitalsFileService vitalsFileService
 
-  def "CreateMissingVitalsFilesInOrg"() {
+  def "createMissingVitalsFilesInOrg = riptide-deprecated-apps"() {
     expect:
     vitalsFileService.createMissingVitalsFilesInOrg('riptide-deprecated-apps')
-  }
-
-  def "CreateMissingVitalsFileInRepo"() {
-
-  }
-
-  def "GetExistingVitalsFile"() {
   }
 }
