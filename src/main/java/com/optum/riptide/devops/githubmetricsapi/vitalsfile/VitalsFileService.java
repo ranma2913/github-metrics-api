@@ -7,6 +7,7 @@ import com.optum.riptide.devops.githubmetricsapi.maven.PomParserService;
 import lombok.extern.slf4j.Slf4j;
 import org.kohsuke.github.GHContent;
 import org.kohsuke.github.GHContentUpdateResponse;
+import org.kohsuke.github.GHFileNotFoundException;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,10 +100,17 @@ public class VitalsFileService {
   }
 
   public Optional<GHContent> getExistingVitalsFile(GHRepository repo) throws IOException {
-    List<GHContent> contentList =
-        repo.getDirectoryContent("/").stream()
-            .filter(ghContent -> ghContent.getName().equals(VITALS_FILE))
-            .toList();
-    return contentList.stream().findFirst();
+    Optional<GHContent> content;
+    try {
+      List<GHContent> contentList =
+          repo.getDirectoryContent("/").stream()
+              .filter(ghContent -> ghContent.getName().equals(VITALS_FILE))
+              .toList();
+      content = contentList.stream().findFirst();
+    } catch (GHFileNotFoundException e) {
+      log.warn("Unable to find vitals.yaml in repository {}", repo.getFullName(), e);
+      content = Optional.empty();
+    }
+    return content;
   }
 }
