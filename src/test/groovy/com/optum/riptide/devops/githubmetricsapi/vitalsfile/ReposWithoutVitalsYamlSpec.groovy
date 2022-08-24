@@ -29,12 +29,12 @@ class ReposWithoutVitalsYamlSpec extends Specification {
     GHOrganization org = githubEnterprise.getOrganization(orgName)
     List<GHRepository> repositories = org.listRepositories(100).toList()
 
-    Path outputFilePath = Paths.get("target/${LocalDateTime.now().toString()}_$outputFileName")
+    Path outputFilePath = Paths.get("target/${LocalDateTime.now().toString().replace(':', '')}_$outputFileName")
     Files.createDirectories(outputFilePath.getParent())
     outputFilePath = Files.createFile(outputFilePath)
 
     List<GHRepository> filteredRepos =
-        repositories.stream()
+        repositories.parallelStream()
             .filter(repo -> {
               !vitalsFileService.getExistingVitalsFile(repo).isPresent()
             })
