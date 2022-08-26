@@ -1,5 +1,6 @@
 package com.optum.riptide.devops.githubmetricsapi.vitalsfile
 
+import com.optum.riptide.devops.githubmetricsapi.FileWriterUtil
 import groovy.util.logging.Slf4j
 import org.kohsuke.github.GHOrganization
 import org.kohsuke.github.GHRepository
@@ -7,6 +8,7 @@ import org.kohsuke.github.GitHub
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import spock.lang.Specification
+import spock.lang.Unroll
 
 import java.nio.file.Files
 import java.nio.file.Path
@@ -21,11 +23,11 @@ class ReposWithoutVitalsYamlSpec extends Specification {
   @Autowired
   VitalsFileService vitalsFileService
 
-  def "create csv of repos missing vitals.yaml"() {
+  @Unroll("Create csv of repos missing vitals.yaml for org = #orgName")
+  def "Create csv of repos missing vitals.yaml"() {
     given:
-    def csvData = [
-        ['Repository', 'Repo URL', 'Default Branch'] // Header Row
-    ]
+    def csvHeadRow = ['Repository', 'Repo URL', 'Default Branch'] // Header Row
+    def csvData = []
     GHOrganization org = githubEnterprise.getOrganization(orgName)
     List<GHRepository> repositories = org.listRepositories(100).toList()
 
@@ -44,14 +46,20 @@ class ReposWithoutVitalsYamlSpec extends Specification {
                   csvData.add(csvRow)
                 })
             .toList()
-    def csvDataRows = csvData*.join(',')
-    Files.write(outputFilePath, csvDataRows)
+    if (outputFilePath.toString().contains("xls")) {
+      FileWriterUtil.writeSimpleXlsxFile(outputFilePath, csvHeadRow, csvData, 'Needs vitals.yaml')
+    } else {
+      FileWriterUtil.writeCsvFile(outputFilePath, [csvHeadRow] + csvData)
+    }
 
     expect:
     filteredRepos.size() < repositories.size()
 
     where:
-    orgName        | outputFileName
-    'riptide-team' | 'riptide-team_missing_vitals.csv'
+    orgName                   | outputFileName
+    'riptide-deprecated-apps' | 'riptide-deprecated-apps_missing_vitals.xlsx'
+    'riptide-devops'          | 'riptide-devops_missing_vitals.xlsx'
+    'riptide-poc'             | 'riptide-poc_missing_vitals.xlsx'
+    'riptide-team'            | 'riptide-team_missing_vitals.xlsx'
   }
 }
