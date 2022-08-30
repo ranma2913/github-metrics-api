@@ -6,17 +6,26 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import spock.lang.Specification
+import spock.lang.Unroll
 
 @SpringBootTest
 @ActiveProfiles(['compiletime-tests'])
-class VitalsFileServiceSpec extends Specification {
+class CreateMissingVitalsFilesInOrg extends Specification {
   @Autowired
   GitHub githubEnterprise
   @Autowired
   VitalsFileService vitalsFileService
 
-  def "createMissingVitalsFilesInOrg = riptide-deprecated-apps"() {
+  @Unroll("createMissingVitalsFilesInOrg = #orgName")
+  def "createMissingVitalsFilesInOrg"() {
     expect:
-    vitalsFileService.createMissingVitalsFilesInOrg('riptide-deprecated-apps')
+    vitalsFileService.createMissingVitalsFilesInOrg(orgName)
+
+    where:
+    no | orgName
+    1  | 'riptide-deprecated-apps'
+    2  | 'riptide-devops'
+    3  | 'riptide-poc'
+//    4  | 'riptide-team'
   }
 }

@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.optum.riptide.devops.githubmetricsapi.compliance.ComplianceFileService;
 import com.optum.riptide.devops.githubmetricsapi.maven.PomParserService;
+import com.optum.riptide.devops.githubmetricsapi.optumfile.OptumFileService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.kohsuke.github.GHContent;
 import org.kohsuke.github.GHContentUpdateResponse;
 import org.kohsuke.github.GHFileNotFoundException;
@@ -27,15 +29,18 @@ public class VitalsFileService {
   final GitHub github;
   final PomParserService pomParserService;
   final ComplianceFileService complianceFileService;
+  final OptumFileService optumFileService;
 
   @Autowired
   public VitalsFileService(
       GitHub github,
       PomParserService pomParserService,
-      ComplianceFileService complianceFileService) {
+      ComplianceFileService complianceFileService,
+      OptumFileService optumFileService) {
     this.github = github;
     this.pomParserService = pomParserService;
     this.complianceFileService = complianceFileService;
+    this.optumFileService = optumFileService;
   }
 
   public Flux<GHRepository> createMissingVitalsFilesInOrg(String org) throws IOException {
@@ -80,7 +85,15 @@ public class VitalsFileService {
             .getMetadata()
             .setProjectFriendlyName(pomParserService.readProjectFriendlyName(repo, POM_FILE));
         vitalsFile.getMetadata().setProjectKey(pomParserService.readProjectKey(repo, POM_FILE));
-        vitalsFile.getMetadata().setCaAgileId(complianceFileService.readCaAgileId(repo));
+
+        // 1. check compliance.yaml
+        var caAgileId = complianceFileService.readCaAgileId(repo);
+        // 2. check Optumfile.yml
+        caAgileId =
+            StringUtils.isNotBlank(caAgileId) ? caAgileId : optumFileService.readCaAgileId(repo);
+        // 3. use 'poc' if not found
+        caAgileId = StringUtils.isNotBlank(caAgileId) ? caAgileId : "poc";
+        vitalsFile.getMetadata().setCaAgileId(caAgileId);
 
         // Create an ObjectMapper mapper for YAML
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());

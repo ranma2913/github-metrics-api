@@ -2,17 +2,16 @@ package com.optum.riptide.devops.githubmetricsapi.compliance
 
 import com.optum.riptide.devops.githubmetricsapi.Constants
 import com.optum.riptide.devops.githubmetricsapi.content.ContentHelper
+import groovy.util.logging.Slf4j
 import groovy.yaml.YamlSlurper
 import org.kohsuke.github.GHContent
 import org.kohsuke.github.GHRepository
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
+@Slf4j
 @Service
 class ComplianceFileService {
-  Logger log = LoggerFactory.getLogger(this.getClass())
   YamlSlurper yamlSlurper
   ContentHelper contentHelper
 
