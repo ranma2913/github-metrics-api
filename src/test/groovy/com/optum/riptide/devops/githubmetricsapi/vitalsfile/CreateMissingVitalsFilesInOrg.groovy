@@ -19,13 +19,13 @@ class CreateMissingVitalsFilesInOrg extends Specification {
   @Unroll("createMissingVitalsFilesInOrg = #orgName")
   def "createMissingVitalsFilesInOrg"() {
     expect:
-    vitalsFileService.createMissingVitalsFilesInOrg(orgName)
+    vitalsFileService.createMissingVitalsFilesInOrg(orgName, enablePoc)
 
     where:
-    no | orgName
-    1  | 'riptide-deprecated-apps'
-    2  | 'riptide-devops'
-    3  | 'riptide-poc'
-//    4  | 'riptide-team'
+    no | orgName       | enablePoc
+//    1  | 'riptide-deprecated-apps' | true
+//    2  | 'riptide-devops'          | false
+    3  | 'riptide-poc' | true
+//    4  | 'riptide-team'            | false
   }
 }

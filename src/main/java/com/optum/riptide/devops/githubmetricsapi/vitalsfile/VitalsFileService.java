@@ -52,7 +52,27 @@ public class VitalsFileService {
             .map(
                 repo -> {
                   try {
-                    return createMissingVitalsFileInRepo(repo);
+                    return createMissingVitalsFileInRepo(repo, false);
+                  } catch (IOException e) {
+                    throw new RuntimeException(e);
+                  }
+                })
+            .toList();
+
+    return Flux.fromIterable(updatedRepositories);
+  }
+
+  public Flux<GHRepository> createMissingVitalsFilesInOrg(String org, boolean enablePoc)
+      throws IOException {
+    List<GHRepository> updatedRepositories;
+    List<GHRepository> repositories = github.getOrganization(org).listRepositories(100).toList();
+
+    updatedRepositories =
+        repositories.stream()
+            .map(
+                repo -> {
+                  try {
+                    return createMissingVitalsFileInRepo(repo, enablePoc);
                   } catch (IOException e) {
                     throw new RuntimeException(e);
                   }
@@ -63,7 +83,8 @@ public class VitalsFileService {
   }
 
   /** create a vitals file if it's missing. Return null if not updated. */
-  public GHRepository createMissingVitalsFileInRepo(GHRepository repo) throws IOException {
+  public GHRepository createMissingVitalsFileInRepo(GHRepository repo, boolean enablePoc)
+      throws IOException {
     Optional<GHContent> vitalsFileOptional = this.getExistingVitalsFile(repo);
     if (vitalsFileOptional.isPresent()) {
       log.info("vitals.yaml exists in repo {}", repo.getFullName());
@@ -92,21 +113,32 @@ public class VitalsFileService {
         caAgileId =
             StringUtils.isNotBlank(caAgileId) ? caAgileId : optumFileService.readCaAgileId(repo);
         // 3. use 'poc' if not found
-        caAgileId = StringUtils.isNotBlank(caAgileId) ? caAgileId : "poc";
-        vitalsFile.getMetadata().setCaAgileId(caAgileId);
+        if (enablePoc) {
+          caAgileId = StringUtils.isNotBlank(caAgileId) ? caAgileId : "poc";
+        }
 
-        // Create an ObjectMapper mapper for YAML
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        String vitalsFileString = mapper.writeValueAsString(vitalsFile);
-        GHContentUpdateResponse response =
-            repo.createContent()
-                .path(VITALS_FILE)
-                .content(vitalsFileString)
-                .message("Create " + VITALS_FILE)
-                .commit();
+        // 4. Upload new vitals file if fully populated.
+        if (StringUtils.isNotBlank(caAgileId)) {
+          vitalsFile.getMetadata().setCaAgileId(caAgileId);
+          // Create an ObjectMapper mapper for YAML
+          ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+          String vitalsFileString = mapper.writeValueAsString(vitalsFile);
+          GHContentUpdateResponse response =
+              repo.createContent()
+                  .path(VITALS_FILE)
+                  .content(vitalsFileString)
+                  .message("Create " + VITALS_FILE)
+                  .commit();
 
-        log.info(
-            "{} file sucessfully added with commit {}", VITALS_FILE, response.getCommit().getSha());
+          log.info(
+              "{} file successfully added with commit {}",
+              VITALS_FILE,
+              response.getCommit().getSha());
+        } else {
+          log.error(
+              "Unable to read caAgileId from compliance.yaml or Optumfile.yml in repo {}",
+              repo.getHtmlUrl());
+        }
       }
     }
     return repo;

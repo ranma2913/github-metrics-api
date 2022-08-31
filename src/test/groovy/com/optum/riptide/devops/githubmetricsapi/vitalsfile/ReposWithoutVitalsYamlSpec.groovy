@@ -58,8 +58,8 @@ class ReposWithoutVitalsYamlSpec extends Specification {
     where:
     orgName                   | outputFileName
     'riptide-deprecated-apps' | 'riptide-deprecated-apps_missing_vitals.xlsx'
-    'riptide-devops'          | 'riptide-devops_missing_vitals.xlsx'
-    'riptide-poc'             | 'riptide-poc_missing_vitals.xlsx'
-    'riptide-team'            | 'riptide-team_missing_vitals.xlsx'
+//    'riptide-devops'          | 'riptide-devops_missing_vitals.xlsx'
+//    'riptide-poc'             | 'riptide-poc_missing_vitals.xlsx'
+//    'riptide-team'            | 'riptide-team_missing_vitals.xlsx'
   }
 }
