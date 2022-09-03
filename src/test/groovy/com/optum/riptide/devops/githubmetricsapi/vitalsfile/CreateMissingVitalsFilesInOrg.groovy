@@ -19,7 +19,7 @@ class CreateMissingVitalsFilesInOrg extends Specification {
   @Unroll("createMissingVitalsFilesInOrg = #orgName")
   def "createMissingVitalsFilesInOrg"() {
     expect:
-    vitalsFileService.createMissingVitalsFilesInOrg(orgName, enablePoc)
+    vitalsFileService.createMissingVitalsFileInRepo(orgName, enablePoc)
 
     where:
     no | orgName       | enablePoc

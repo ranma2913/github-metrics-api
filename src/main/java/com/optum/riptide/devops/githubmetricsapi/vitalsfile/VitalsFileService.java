@@ -87,9 +87,9 @@ public class VitalsFileService {
       throws IOException {
     Optional<GHContent> vitalsFileOptional = this.getExistingVitalsFile(repo);
     if (vitalsFileOptional.isPresent()) {
-      log.info("vitals.yaml exists in repo {}", repo.getFullName());
+      log.debug("vitals.yaml exists in repo {}", repo.getHtmlUrl());
     } else {
-      log.warn("vitals.yaml not found in repo {}", repo.getFullName());
+      log.warn("vitals.yaml not found in repo {}", repo.getHtmlUrl());
       if (repo.isArchived()) {
         log.error(
             "Repository {} is archived. Please go to the GitHub Web UI to unarchive: {}",
