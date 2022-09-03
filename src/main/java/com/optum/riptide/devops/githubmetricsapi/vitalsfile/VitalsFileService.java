@@ -86,8 +86,10 @@ public class VitalsFileService {
   public GHRepository createMissingVitalsFileInRepo(GHRepository repo, boolean enablePoc)
       throws IOException {
     Optional<GHContent> vitalsFileOptional = this.getExistingVitalsFile(repo);
+    GHRepository updatedRepo = null;
     if (vitalsFileOptional.isPresent()) {
       log.debug("vitals.yaml exists in repo {}", repo.getHtmlUrl());
+      updatedRepo = repo;
     } else {
       log.warn("vitals.yaml not found in repo {}", repo.getHtmlUrl());
       if (repo.isArchived()) {
@@ -134,6 +136,7 @@ public class VitalsFileService {
               "{} file successfully added with commit {}",
               VITALS_FILE,
               response.getCommit().getSha());
+          updatedRepo = repo;
         } else {
           log.error(
               "Unable to read caAgileId from compliance.yaml or Optumfile.yml in repo {}",
@@ -141,7 +144,7 @@ public class VitalsFileService {
         }
       }
     }
-    return repo;
+    return updatedRepo;
   }
 
   public Optional<GHContent> getExistingVitalsFile(GHRepository repo) throws IOException {
