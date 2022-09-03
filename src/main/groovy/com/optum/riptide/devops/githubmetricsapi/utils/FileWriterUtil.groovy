@@ -1,4 +1,4 @@
-package com.optum.riptide.devops.githubmetricsapi
+package com.optum.riptide.devops.githubmetricsapi.utils
 
 import org.apache.poi.common.usermodel.HyperlinkType
 import org.apache.poi.ss.SpreadsheetVersion

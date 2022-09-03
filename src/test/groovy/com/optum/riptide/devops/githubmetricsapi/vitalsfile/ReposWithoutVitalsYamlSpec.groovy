@@ -1,6 +1,6 @@
 package com.optum.riptide.devops.githubmetricsapi.vitalsfile
 
-import com.optum.riptide.devops.githubmetricsapi.FileWriterUtil
+import com.optum.riptide.devops.githubmetricsapi.utils.FileWriterUtil
 import groovy.util.logging.Slf4j
 import org.kohsuke.github.GHOrganization
 import org.kohsuke.github.GHRepository
@@ -47,7 +47,7 @@ class ReposWithoutVitalsYamlSpec extends Specification {
                 })
             .toList()
     if (outputFilePath.toString().contains("xls")) {
-      FileWriterUtil.writeSimpleXlsxFile(outputFilePath, csvHeadRow, csvData, 'Needs vitals.yaml')
+      FileWriterUtil.writeSimpleXlsxFile(outputFilePath, csvHeadRow, csvData, sheetName)
     } else {
       FileWriterUtil.writeCsvFile(outputFilePath, [csvHeadRow] + csvData)
     }
@@ -56,8 +56,8 @@ class ReposWithoutVitalsYamlSpec extends Specification {
     filteredRepos.size() < repositories.size()
 
     where:
-    orgName                   | outputFileName
-    'riptide-deprecated-apps' | 'riptide-deprecated-apps_missing_vitals.xlsx'
+    orgName                   | sheetName           | outputFileName
+    'riptide-deprecated-apps' | 'Needs vitals.yaml' | 'riptide-deprecated-apps_missing_vitals.xlsx'
 //    'riptide-devops'          | 'riptide-devops_missing_vitals.xlsx'
 //    'riptide-poc'             | 'riptide-poc_missing_vitals.xlsx'
 //    'riptide-team'            | 'riptide-team_missing_vitals.xlsx'
