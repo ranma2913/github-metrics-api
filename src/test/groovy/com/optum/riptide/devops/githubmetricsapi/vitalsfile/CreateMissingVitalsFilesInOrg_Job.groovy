@@ -10,7 +10,7 @@ import spock.lang.Unroll
 
 @SpringBootTest
 @ActiveProfiles(['compiletime-tests'])
-class CreateMissingVitalsFilesInOrg extends Specification {
+class CreateMissingVitalsFilesInOrg_Job extends Specification {
   @Autowired
   GitHub githubEnterprise
   @Autowired

@@ -15,7 +15,7 @@ import java.nio.file.Paths
 import java.time.LocalDateTime
 
 @SpringBootTest
-class GitHub_TransferRepositoriesSpec extends Specification {
+class GitHub_TransferRepositories_Job extends Specification {
   @Autowired
   GitHub githubEnterprise
 

@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
 
 @Slf4j
 @SpringBootTest
-class GitHub_DeleteEmptyRepos extends Specification {
+class GitHub_DeleteEmptyRepos_Job extends Specification {
   @Autowired
   GitHub githubEnterprise
 

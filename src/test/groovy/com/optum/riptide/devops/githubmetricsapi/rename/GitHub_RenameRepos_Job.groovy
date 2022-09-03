@@ -12,7 +12,7 @@ import spock.lang.Unroll
 
 @Slf4j
 @SpringBootTest
-class GitHub_RenameReposSpec extends Specification {
+class GitHub_RenameRepos_Job extends Specification {
   @Autowired
   GitHub githubEnterprise
 

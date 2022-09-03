@@ -17,7 +17,7 @@ import java.time.LocalDateTime
 
 @SpringBootTest
 @Slf4j
-class ReposWithoutVitalsYamlSpec extends Specification {
+class ReposWithoutVitalsYamlSpec_Job extends Specification {
   @Autowired
   GitHub githubEnterprise
   @Autowired

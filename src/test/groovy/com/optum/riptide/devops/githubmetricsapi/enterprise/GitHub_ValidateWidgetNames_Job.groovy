@@ -15,7 +15,7 @@ import java.time.LocalDateTime
 
 @Slf4j
 @SpringBootTest
-class GitHub_ValidateWidgetNamesSpec extends Specification {
+class GitHub_ValidateWidgetNames_Job extends Specification {
   @Autowired
   GitHub githubEnterprise
 
