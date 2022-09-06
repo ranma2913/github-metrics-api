@@ -19,9 +19,19 @@
     <gmavenplus-plugin.version>1.13.1</gmavenplus-plugin.version><!-- Check the latest version: https://mvnrepository.com/artifact/org.codehaus.gmavenplus/gmavenplus-plugin -->
     <spock.version>2.1-groovy-3.0</spock.version><!-- Check the latest version: https://mvnrepository.com/artifact/org.spockframework/spock-core -->
     <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version><!-- Check the latest version: https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
+
+    <!-- Riptide Dependency Versions -->
+    <rest-clients.version>2.0.1</rest-clients.version><!-- Check for latest version: https://repo1.uhc.com/artifactory/UHG-Releases/com/optum/riptide/http/rest-clients/ -->
+    <riptide-memory-utils.version>1.0.7</riptide-memory-utils.version><!-- Check for latest version: https://repo1.uhc.com/artifactory/UHG-Releases/com/optum/riptide/utils/riptide-memory-utils/ -->
+    <graceful-shutdown.version>1.2.0</graceful-shutdown.version><!-- Check for latest version: https://repo1.uhc.com/artifactory/UHG-Releases/com/optum/riptide/springboot/graceful-shutdown/ -->
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>com.optum.riptide.http</groupId>
+      <artifactId>rest-clients</artifactId>
+      <version>${rest-clients.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
