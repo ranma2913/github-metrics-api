@@ -3,6 +3,7 @@ package com.optum.riptide.devops.githubmetricsapi.branch.protection
 import groovy.util.logging.Slf4j
 import org.kohsuke.github.GHBranch
 import org.kohsuke.github.GHBranchProtection
+import org.kohsuke.github.GHBranchProtectionBuilder
 import org.kohsuke.github.GitHub
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -49,26 +50,46 @@ class BranchProtectionService {
   }
 
   GHBranch protectBranch(@NotNull GHBranch branch, @NotNull GHBranchProtection protection) {
-    branch.enableProtection()
-        .addRequiredChecks(protection.getRequiredStatusChecks().getContexts())
-        .includeAdmins(protection.getEnforceAdmins().isEnabled())
-        .teamReviewDismissals(protection.getRequiredReviews().getDismissalRestrictions().getTeams())
-        .userReviewDismissals(protection.getRequiredReviews().getDismissalRestrictions().getUsers())
-        // 20220907 not supported: $.required_pull_request_reviews.dismissal_restrictions.apps
-        .dismissStaleReviews(protection.getRequiredReviews().isDismissStaleReviews())
-        .requireCodeOwnReviews(protection.getRequiredReviews().isRequireCodeOwnerReviews())
-        .requiredReviewers(protection.getRequiredReviews().getRequiredReviewers())
-        // 20220907 not supported: $.required_pull_request_reviews.bypass_pull_request_allowances.teams
-        // 20220907 not supported: $.required_pull_request_reviews.bypass_pull_request_allowances.users
-        .restrictPushAccess().teamPushAccess(protection.getRestrictions().getTeams())
-        .restrictPushAccess().userPushAccess(protection.getRestrictions().getUsers())
-        // 20220907 not supported: $.restrictions.apps
-        // 20220907 not supported: $.required_linear_history
-        // 20220907 not supported: $.allow_force_pushes
-        // 20220907 not supported: $.allow_deletions
-        // 20220907 not supported: $.block_creations
-        // 20220907 not supported: $.required_conversation_resolution
-    .enable()
+    GHBranchProtectionBuilder ghBranchProtectionBuilder = branch.enableProtection()
+
+    if (protection?.getRequiredStatusChecks()?.getContexts()) {
+      ghBranchProtectionBuilder.addRequiredChecks(protection.getRequiredStatusChecks().getContexts())
+    }
+    if (protection?.getEnforceAdmins()?.isEnabled()) {
+      ghBranchProtectionBuilder.includeAdmins(protection.getEnforceAdmins().isEnabled())
+    }
+    if (protection?.getRequiredReviews()?.getDismissalRestrictions()?.getTeams()) {
+      ghBranchProtectionBuilder.teamReviewDismissals(protection.getRequiredReviews().getDismissalRestrictions().getTeams())
+    }
+    if (protection?.getRequiredReviews()?.getDismissalRestrictions()?.getUsers()) {
+      ghBranchProtectionBuilder.userReviewDismissals(protection.getRequiredReviews().getDismissalRestrictions().getUsers())
+    }
+    // 20220907 not supported: $.required_pull_request_reviews.dismissal_restrictions.apps
+    if (protection?.getRequiredReviews()?.isDismissStaleReviews()) {
+      ghBranchProtectionBuilder.dismissStaleReviews(protection.getRequiredReviews().isDismissStaleReviews())
+    }
+    if (protection?.getRequiredReviews()?.isRequireCodeOwnerReviews()) {
+      ghBranchProtectionBuilder.requireCodeOwnReviews(protection.getRequiredReviews().isRequireCodeOwnerReviews())
+    }
+    if (protection?.getRequiredReviews()?.getRequiredReviewers()) {
+      ghBranchProtectionBuilder.requiredReviewers(protection.getRequiredReviews().getRequiredReviewers())
+    }
+    // 20220907 not supported: $.required_pull_request_reviews.bypass_pull_request_allowances.teams
+    // 20220907 not supported: $.required_pull_request_reviews.bypass_pull_request_allowances.users
+    if (protection?.getRestrictions()?.getTeams()) {
+      ghBranchProtectionBuilder.restrictPushAccess().teamPushAccess(protection.getRestrictions().getTeams())
+    }
+    if (protection?.getRestrictions()?.getUsers()) {
+      ghBranchProtectionBuilder.restrictPushAccess().userPushAccess(protection.getRestrictions().getUsers())
+    }
+    // 20220907 not supported: $.restrictions.apps
+    // 20220907 not supported: $.required_linear_history
+    // 20220907 not supported: $.allow_force_pushes
+    // 20220907 not supported: $.allow_deletions
+    // 20220907 not supported: $.block_creations
+    // 20220907 not supported: $.required_conversation_resolution
+    log.info("Recreating Branch Protections for repo = {}", branch.getOwner().getHtmlUrl())
+    ghBranchProtectionBuilder.enable()
     return branch
   }
 }
