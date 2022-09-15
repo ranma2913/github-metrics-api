@@ -56,10 +56,10 @@ class ReposWithoutVitalsYamlSpec_Job extends Specification {
     filteredRepos.size() < repositories.size()
 
     where:
-    orgName                   | sheetName           | outputFileName
-    'riptide-deprecated-apps' | 'Needs vitals.yaml' | 'riptide-deprecated-apps_missing_vitals.xlsx'
-//    'riptide-devops'          | 'riptide-devops_missing_vitals.xlsx'
-//    'riptide-poc'             | 'riptide-poc_missing_vitals.xlsx'
-//    'riptide-team'            | 'riptide-team_missing_vitals.xlsx'
+    orgName        | sheetName           | outputFileName
+//    'riptide-deprecated-apps' | 'Needs vitals.yaml' | 'riptide-deprecated-apps_missing_vitals.xlsx'
+//    'riptide-devops'          | 'Needs vitals.yaml' | 'riptide-devops_missing_vitals.xlsx'
+//    'riptide-poc'             | 'Needs vitals.yaml' | 'riptide-poc_missing_vitals.xlsx'
+    'riptide-team' | 'Needs vitals.yaml' | 'riptide-team_missing_vitals.xlsx'
   }
 }
