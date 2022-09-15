@@ -2,11 +2,14 @@ package com.optum.riptide.devops.githubmetricsapi.vitalsfile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.optum.riptide.devops.githubmetricsapi.branch.protection.BranchProtectionService;
 import com.optum.riptide.devops.githubmetricsapi.compliance.ComplianceFileService;
 import com.optum.riptide.devops.githubmetricsapi.maven.PomParserService;
 import com.optum.riptide.devops.githubmetricsapi.optumfile.OptumFileService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.kohsuke.github.GHBranch;
+import org.kohsuke.github.GHBranchProtection;
 import org.kohsuke.github.GHContent;
 import org.kohsuke.github.GHContentUpdateResponse;
 import org.kohsuke.github.GHFileNotFoundException;
@@ -30,17 +33,20 @@ public class VitalsFileService {
   final PomParserService pomParserService;
   final ComplianceFileService complianceFileService;
   final OptumFileService optumFileService;
+  final BranchProtectionService branchProtectionService;
 
   @Autowired
   public VitalsFileService(
       GitHub github,
       PomParserService pomParserService,
       ComplianceFileService complianceFileService,
-      OptumFileService optumFileService) {
+      OptumFileService optumFileService,
+      BranchProtectionService branchProtectionService) {
     this.github = github;
     this.pomParserService = pomParserService;
     this.complianceFileService = complianceFileService;
     this.optumFileService = optumFileService;
+    this.branchProtectionService = branchProtectionService;
   }
 
   public Flux<GHRepository> createMissingVitalsFilesInOrg(String org) throws IOException {
@@ -52,7 +58,7 @@ public class VitalsFileService {
             .map(
                 repo -> {
                   try {
-                    return createMissingVitalsFileInRepo(repo, false);
+                    return createMissingVitalsFileInRepo(repo, false, true);
                   } catch (IOException e) {
                     throw new RuntimeException(e);
                   }
@@ -64,6 +70,12 @@ public class VitalsFileService {
 
   public Flux<GHRepository> createMissingVitalsFilesInOrg(String org, boolean enablePoc)
       throws IOException {
+    return this.createMissingVitalsFilesInOrg(org, enablePoc, false);
+  }
+
+  public Flux<GHRepository> createMissingVitalsFilesInOrg(
+      String org, boolean enablePoc, boolean overrideBranchProtection) throws IOException {
+
     List<GHRepository> updatedRepositories;
     List<GHRepository> repositories = github.getOrganization(org).listRepositories(100).toList();
 
@@ -72,7 +84,7 @@ public class VitalsFileService {
             .map(
                 repo -> {
                   try {
-                    return createMissingVitalsFileInRepo(repo, enablePoc);
+                    return createMissingVitalsFileInRepo(repo, enablePoc, overrideBranchProtection);
                   } catch (IOException e) {
                     throw new RuntimeException(e);
                   }
@@ -83,8 +95,8 @@ public class VitalsFileService {
   }
 
   /** create a vitals file if it's missing. Return null if not updated. */
-  public GHRepository createMissingVitalsFileInRepo(GHRepository repo, boolean enablePoc)
-      throws IOException {
+  public GHRepository createMissingVitalsFileInRepo(
+      GHRepository repo, boolean enablePoc, boolean overrideBranchProtection) throws IOException {
     Optional<GHContent> vitalsFileOptional = this.getExistingVitalsFile(repo);
     GHRepository updatedRepo = null;
     if (vitalsFileOptional.isPresent()) {
@@ -98,11 +110,14 @@ public class VitalsFileService {
             repo.getFullName(),
             repo.getHtmlUrl() + "/settings");
       } else {
-        //        GHBranch branch = repo.getBranch(repo.getDefaultBranch());
-        //        if (branch.isProtected()) {
-        //          branch.disableProtection();
-        //        }
-
+        GHBranchProtection origProtection = null;
+        if (overrideBranchProtection) {
+          GHBranch branch = repo.getBranch(repo.getDefaultBranch());
+          if (branch.isProtected()) {
+            origProtection = branch.getProtection();
+            branch.disableProtection();
+          }
+        }
         VitalsFile vitalsFile = new VitalsFile();
         vitalsFile
             .getMetadata()
@@ -141,6 +156,12 @@ public class VitalsFileService {
           log.error(
               "Unable to read caAgileId from compliance.yaml or Optumfile.yml in repo {}",
               repo.getHtmlUrl());
+        }
+
+        // Put back protection if any.
+        if (null != origProtection) {
+          branchProtectionService.protectBranch(
+              repo.getBranch(repo.getDefaultBranch()), origProtection);
         }
       }
     }

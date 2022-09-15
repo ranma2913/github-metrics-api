@@ -1,6 +1,6 @@
 package com.optum.riptide.devops.githubmetricsapi.vitalsfile
 
-import org.kohsuke.github.GHRepository
+
 import org.kohsuke.github.GitHub
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -19,13 +19,13 @@ class CreateMissingVitalsFilesInOrg_Job extends Specification {
   @Unroll("createMissingVitalsFilesInOrg = #orgName")
   def "createMissingVitalsFilesInOrg"() {
     expect:
-    vitalsFileService.createMissingVitalsFilesInOrg(orgName, enablePoc)
+    vitalsFileService.createMissingVitalsFilesInOrg(orgName, enablePoc, overrideBranchProtection)
 
     where:
-    no | orgName       | enablePoc
-//    1  | 'riptide-deprecated-apps' | true
-//    2  | 'riptide-devops'          | false
-    3  | 'riptide-poc' | true
-//    4  | 'riptide-team'            | false
+    no | orgName                   | enablePoc | overrideBranchProtection
+    1  | 'riptide-deprecated-apps' | true      | true
+//    2  | 'riptide-devops'          | false | false
+//    3  | 'riptide-poc' | true | false
+//    4  | 'riptide-team'            | false | false
   }
 }
