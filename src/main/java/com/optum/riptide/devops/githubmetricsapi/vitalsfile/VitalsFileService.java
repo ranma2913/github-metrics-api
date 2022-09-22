@@ -168,6 +168,15 @@ public class VitalsFileService {
     return updatedRepo;
   }
 
+  public Optional<GHContent> updateExistingVitalsFile(GHRepository repo, VitalsFile newVitalsFile) throws IOException {
+    Optional<GHContent> vitalsFileOptional = this.getExistingVitalsFile(repo);
+    if (vitalsFileOptional.isPresent()) {
+      GHContentUpdateResponse updateResponse = vitalsFileOptional.get()
+          .update(newVitalsFile.toString(), "Updating vitals.yaml content.");
+     log.info("Updated vitals.yaml in commit = {}", updateResponse.getCommit().getHtmlUrl());
+    }
+    return vitalsFileOptional;
+  }
   public Optional<GHContent> getExistingVitalsFile(GHRepository repo) throws IOException {
     Optional<GHContent> content;
     try {
