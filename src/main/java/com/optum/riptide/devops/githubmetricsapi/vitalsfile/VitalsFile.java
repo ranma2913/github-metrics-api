@@ -15,7 +15,8 @@ public class VitalsFile {
   @Override
   public String toString() {
     ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-    return mapper.writeValueAsString(this);
+    String thisString = mapper.writeValueAsString(this);
+    return thisString.replaceAll("^---\n","");
   }
 
   @Data
@@ -38,12 +39,6 @@ public class VitalsFile {
     public void setProjectFriendlyName(String projectFriendlyName) {
       this.projectFriendlyName =
           StringUtils.isNotBlank(projectFriendlyName) ? projectFriendlyName : "poc";
-    }
-    @SneakyThrows
-    @Override
-    public String toString() {
-      ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-      return mapper.writeValueAsString(this);
     }
   }
 }

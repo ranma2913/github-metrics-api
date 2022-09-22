@@ -9,8 +9,7 @@ class VitalsFileSpec extends Specification {
     def vitalsFileString = vitalsFile.toString()
 
     expect:
-    vitalsFileString == '''---
-apiVersion: "v1"
+    vitalsFileString == '''apiVersion: "v1"
 metadata:
   askId: "~"
   caAgileId: "poc"
