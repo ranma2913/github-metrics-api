@@ -10,7 +10,7 @@ public class VitalsFile {
 
   @Data
   public class Metadata {
-    private String askId = "UHGWM110-017197";
+    private String askId = "~";
     private String caAgileId = "poc";
     private String projectKey = "poc";
     private String projectFriendlyName = "poc";
