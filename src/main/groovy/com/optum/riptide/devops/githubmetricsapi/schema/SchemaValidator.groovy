@@ -45,7 +45,9 @@ class SchemaValidator {
     String cleanText = objectMapper.writeValueAsString(textObject)
     JsonNode cleanTextObject = objectMapper.readTree(cleanText)
     JsonSchema jsonSchema = validatorFactory.getSchema(schema)
-    return jsonSchema.validate(cleanTextObject)
+    Set<ValidationMessage> validationMessages = jsonSchema.validate(cleanTextObject)
+
+    return validationMessages
   }
 
   Set<String> validationMessagesStrings(Set<ValidationMessage> validationMessages) {

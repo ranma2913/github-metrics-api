@@ -53,10 +53,10 @@ class UpdateVitalsFilesInOrg_Job extends Specification {
     updatedRepositories.size() == repositories.size()
 
     where:
-    no | orgName                   | askId | caAgileId
-    1  | 'riptide-deprecated-apps' | '~'   | 'do not use rally or use other system'
-//    2  | 'riptide-devops'          | 'UHGWM110-017197' | 'poc'
-//    3  | 'riptide-poc'             | '~'               | 'poc'
-//    4  | 'riptide-team'            | 'UHGWM110-017197' | 'poc'
+    no | orgName       | askId | caAgileId
+//    1  | 'riptide-deprecated-apps' | '~'   | 'do not use rally or use other system'
+//    2  | 'riptide-devops'          | 'UHGWM110-017197' | 'do not use rally or use other system'
+    3  | 'riptide-poc' | '~'   | 'do not use rally or use other system'
+//    4  | 'riptide-team'            | 'UHGWM110-017197' | 'do not use rally or use other system'
   }
 }

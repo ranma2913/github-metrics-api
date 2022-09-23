@@ -2,6 +2,7 @@ package com.optum.riptide.devops.githubmetricsapi.vitalsfile
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import com.networknt.schema.CustomErrorMessageType
 import com.networknt.schema.ValidationMessage
 import com.optum.riptide.devops.githubmetricsapi.branch.protection.BranchProtectionService
 import com.optum.riptide.devops.githubmetricsapi.compliance.ComplianceFileService
@@ -23,6 +24,8 @@ import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Service
 import org.springframework.util.StreamUtils
 import reactor.core.publisher.Flux
+
+import java.text.MessageFormat
 
 import static com.optum.riptide.devops.githubmetricsapi.Constants.POM_FILE
 import static com.optum.riptide.devops.githubmetricsapi.Constants.VITALS_FILE
@@ -211,6 +214,18 @@ class VitalsFileService {
 
   Set<ValidationMessage> validateVitalsFile(GHContent vitalsFileContent) throws IOException {
     String existingFile = vitalsFileContent.content
-    return schemaValidator.validateYamlText(localVitalsFileSchema, existingFile, null)
+    Set<ValidationMessage> validationMessages = new LinkedHashSet<>()
+    try {
+      validationMessages = schemaValidator.validateYamlText(localVitalsFileSchema, existingFile, null)
+    } catch (Exception e) {
+      log.error('Unable to validate {}', vitalsFileContent.getHtmlUrl(), e)
+      def customValidationMessage = ValidationMessage.of('Parse error',
+          new CustomErrorMessageType('FATAL',
+              new MessageFormat("Unable to parse ${vitalsFileContent.getHtmlUrl()}, cause = ${e.getLocalizedMessage()}")),
+          "${e.getClass()}", vitalsFileContent.getHtmlUrl(), e.getLocalizedMessage())
+      log.debug('Custom ValidationMessage = {}', customValidationMessage)
+      validationMessages.add(customValidationMessage)
+    }
+    return validationMessages
   }
 }

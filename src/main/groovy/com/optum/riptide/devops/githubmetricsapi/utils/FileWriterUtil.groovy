@@ -60,9 +60,9 @@ class FileWriterUtil {
       nameCell.setCellValue(dataItemList[0])
 
       XSSFCell urlCell = row.createCell(1)
-      urlCell.setCellValue((dataItemList[1] as URL).toString())
+      urlCell.setCellValue(dataItemList[1])
       XSSFHyperlink link = (XSSFHyperlink) createHelper.createHyperlink(HyperlinkType.URL)
-      link.setAddress((dataItemList[1] as URL).toString())
+      link.setAddress(new URL(dataItemList[1]).toString())
       urlCell.setHyperlink((XSSFHyperlink) link)
       urlCell.setCellStyle(hlinkstyle)
 
@@ -79,6 +79,7 @@ class FileWriterUtil {
     try (FileOutputStream fileOutputStream = new FileOutputStream(outputFilePath.toString())) {
       wb.write(fileOutputStream)
     }
+    return outputFilePath
   }
 
   /**

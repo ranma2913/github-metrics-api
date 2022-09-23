@@ -22,10 +22,10 @@ class CreateMissingVitalsFilesInOrg_Job extends Specification {
     vitalsFileService.createMissingVitalsFilesInOrg(orgName, enablePoc, overrideBranchProtection)
 
     where:
-    no | orgName        | enablePoc | overrideBranchProtection
+    no | orgName       | enablePoc | overrideBranchProtection
 //    1  | 'riptide-deprecated-apps' | true      | true
 //    2  | 'riptide-devops' | true     | false
-//    3  | 'riptide-poc'             | true      | true
-    4  | 'riptide-team' | false     | false
+    3  | 'riptide-poc' | true      | true
+//    4  | 'riptide-team' | false     | false
   }
 }
