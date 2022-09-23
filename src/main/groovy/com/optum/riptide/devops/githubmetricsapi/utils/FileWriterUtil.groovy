@@ -54,13 +54,13 @@ class FileWriterUtil {
     headerDefaultBranchCell.setCellValue(csvHeadRow[2])
 
     /* Add remaining Table Data */
-    csvData.each() { dataItemList ->
+    for (List<String> csvRow in csvData) {
       XSSFRow row = sheet.createRow(sheet.getLastRowNum() + 1)
       XSSFCell nameCell = row.createCell(0, CellType.STRING)
-      nameCell.setCellValue(dataItemList[0])
+      nameCell.setCellValue(csvRow[0])
 
       XSSFCell urlCell = row.createCell(1)
-      URL url = new URL("${dataItemList[1]}")
+      URL url = new URL("${csvRow[1]}")
       urlCell.setCellValue(url.toString())
       XSSFHyperlink link = (XSSFHyperlink) createHelper.createHyperlink(HyperlinkType.URL)
       link.setAddress(url.toString())
@@ -68,7 +68,7 @@ class FileWriterUtil {
       urlCell.setCellStyle(hlinkstyle)
 
       XSSFCell defaultBranchCell = row.createCell(2, CellType.STRING)
-      defaultBranchCell.setCellValue(dataItemList[2])
+      defaultBranchCell.setCellValue(csvRow[2])
     }
 
 /* Auto Size Column Width now that all data is added */

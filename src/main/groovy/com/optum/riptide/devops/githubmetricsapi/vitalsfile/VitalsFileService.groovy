@@ -53,7 +53,7 @@ class VitalsFileService {
       BranchProtectionService branchProtectionService,
       SchemaValidator schemaValidator,
       @Value('${uhg.vitals-file.schema}') String vitalsFileSchemaUrl,
-      @Value('${classpath:schema_orig.json}') ClassPathResource localSchemaJson) {
+      @Value('${classpath:vitals_yaml_schema.json}') ClassPathResource localSchemaJson) {
     this.github = github
     this.pomParserService = pomParserService
     this.complianceFileService = complianceFileService

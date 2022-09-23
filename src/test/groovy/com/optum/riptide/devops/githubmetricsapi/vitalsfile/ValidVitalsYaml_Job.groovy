@@ -32,10 +32,10 @@ class ValidVitalsYaml_Job extends Specification {
   def "Validate vitals.yaml for org"() {
     given: 'define the header row'
     def csvHeadRow = ['Repository', 'Vitals File URL', 'Vitals File Details'] // Header Row
-    def csvData = []
+    List csvData = new LinkedList()
 
     when: 'read the data'
-    csvData = csvData.addAll(readCsvDataForOrg(orgName))
+    csvData.addAll(readCsvDataForOrg(orgName))
 
     then: 'export the file'
     writeOutputFile(csvHeadRow, csvData, outputFileName, sheetName)
@@ -44,11 +44,11 @@ class ValidVitalsYaml_Job extends Specification {
     csvData.size() > 0
 
     where: 'examples to execute'
-    orgName                   | sheetName                 | outputFileName
-    'riptide-deprecated-apps' | 'riptide-deprecated-apps' | 'riptide-deprecated-apps_vitals_file_schema_validation.xlsx'
-    'riptide-devops'          | 'riptide-devops'          | 'riptide-devops_vitals_file_schema_validation.xlsx'
-    'riptide-poc'             | 'riptide-poc'             | 'riptide-poc_vitals_file_schema_validation.xlsx'
-    'riptide-team'            | 'riptide-team'            | 'riptide-team_vitals_file_schema_validation.xlsx'
+    orgName        | sheetName      | outputFileName
+//    'riptide-deprecated-apps' | 'riptide-deprecated-apps' | 'riptide-deprecated-apps_vitals_file_schema_validation.xlsx'
+//    'riptide-devops' | 'riptide-devops' | 'riptide-devops_vitals_file_schema_validation.xlsx'
+//    'riptide-poc'             | 'riptide-poc'             | 'riptide-poc_vitals_file_schema_validation.xlsx'
+    'riptide-team' | 'riptide-team' | 'riptide-team_vitals_file_schema_validation.xlsx'
   }
 
   def "Validate vitals.yaml in multiple orgs and output one sheet"() {
@@ -76,7 +76,7 @@ class ValidVitalsYaml_Job extends Specification {
     writeOutputFile(csvHeadRow, csvData, outputFileName, sheetName)
   }
 
-  def writeOutputFile(def csvHeadRow, def csvData, def outputFileName, def sheetName) {
+  def writeOutputFile(List csvHeadRow, List csvData, String outputFileName, String sheetName) {
     Path outputFilePath = Paths.get("target/${LocalDateTime.now().toString().replace(':', '')}_$outputFileName")
     Files.createDirectories(outputFilePath.getParent())
     outputFilePath = Files.createFile(outputFilePath)
@@ -110,7 +110,7 @@ class ValidVitalsYaml_Job extends Specification {
                 vitalsFileHtmlUrl = repo.getHtmlUrl()
                 vitalsFileDetails = 'Not Found'
               }
-              def csvRow = [repo.getFullName()?.trim() ?: "${repo.getOwner()}/${repo.getName()}", vitalsFileHtmlUrl, vitalsFileDetails]
+              def csvRow = [repo.getFullName()?.trim() ?: "${repo.getOwner()}/${repo.getName()}", vitalsFileHtmlUrl, vitalsFileDetails as String]
               csvData.add(csvRow)
             }).toList()
     return csvData
