@@ -110,7 +110,7 @@ class ValidVitalsYaml_Job extends Specification {
                 vitalsFileHtmlUrl = repo.getHtmlUrl()
                 vitalsFileDetails = 'Not Found'
               }
-              def csvRow = [repo.getFullName(), vitalsFileHtmlUrl, vitalsFileDetails]
+              def csvRow = [repo.getFullName()?.trim() ?: "${repo.getOwner()}/${repo.getName()}", vitalsFileHtmlUrl, vitalsFileDetails]
               csvData.add(csvRow)
             }).toList()
     return csvData
