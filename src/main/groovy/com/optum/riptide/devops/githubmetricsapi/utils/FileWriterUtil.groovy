@@ -60,7 +60,7 @@ class FileWriterUtil {
       nameCell.setCellValue(dataItemList[0])
 
       XSSFCell urlCell = row.createCell(1)
-      URL url = new URL(dataItemList[1])
+      URL url = new URL("${dataItemList[1]}")
       urlCell.setCellValue(url.toString())
       XSSFHyperlink link = (XSSFHyperlink) createHelper.createHyperlink(HyperlinkType.URL)
       link.setAddress(url.toString())
