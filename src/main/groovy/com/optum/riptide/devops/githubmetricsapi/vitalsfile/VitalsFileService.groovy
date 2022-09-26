@@ -198,15 +198,19 @@ class VitalsFileService {
   }
 
   Optional<GHContent> getExistingVitalsFile(GHRepository repo) throws IOException {
+    return this.lookupGHContent(repo, '/', VITALS_FILE)
+  }
+
+  Optional<GHContent> lookupGHContent(GHRepository repo, String directory, String fileName) throws IOException {
     Optional<GHContent> content
     try {
       List<GHContent> contentList =
-          repo.getDirectoryContent('/').stream()
-              .filter(ghContent -> ghContent.name == VITALS_FILE)
+          repo.getDirectoryContent(directory).stream()
+              .filter(ghContent -> ghContent.name == fileName)
               .toList()
       content = contentList.stream().findFirst()
     } catch (GHFileNotFoundException e) {
-      log.warn('Unable to find vitals.yaml in repository {}', repo.fullName, e)
+      log.warn('Unable to find {}{} in repository {}', directory, fileName, repo.getHtmlUrl(), e)
       content = Optional.empty()
     }
     return content
