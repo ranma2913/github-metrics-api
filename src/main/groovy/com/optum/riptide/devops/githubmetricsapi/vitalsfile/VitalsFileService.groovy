@@ -6,6 +6,7 @@ import com.networknt.schema.CustomErrorMessageType
 import com.networknt.schema.ValidationMessage
 import com.optum.riptide.devops.githubmetricsapi.branch.protection.BranchProtectionService
 import com.optum.riptide.devops.githubmetricsapi.compliance.ComplianceFileService
+import com.optum.riptide.devops.githubmetricsapi.content.ContentHelper
 import com.optum.riptide.devops.githubmetricsapi.maven.PomParserService
 import com.optum.riptide.devops.githubmetricsapi.optumfile.OptumFileService
 import com.optum.riptide.devops.githubmetricsapi.schema.SchemaValidator
@@ -15,11 +16,11 @@ import org.kohsuke.github.GHBranch
 import org.kohsuke.github.GHBranchProtection
 import org.kohsuke.github.GHContent
 import org.kohsuke.github.GHContentUpdateResponse
-import org.kohsuke.github.GHFileNotFoundException
 import org.kohsuke.github.GHRepository
 import org.kohsuke.github.GitHub
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.cache.annotation.CacheEvict
 import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Service
 import org.springframework.util.StreamUtils
@@ -36,30 +37,25 @@ import static java.nio.charset.StandardCharsets.UTF_8
 class VitalsFileService {
   String localVitalsFileSchema
   String remoteVitalsFileSchema
-  final GitHub github
-  final PomParserService pomParserService
-  final ComplianceFileService complianceFileService
-  final OptumFileService optumFileService
-  final BranchProtectionService branchProtectionService
-  final SchemaValidator schemaValidator
-
+  @Autowired
+  GitHub github
+  @Autowired
+  PomParserService pomParserService
+  @Autowired
+  ComplianceFileService complianceFileService
+  @Autowired
+  OptumFileService optumFileService
+  @Autowired
+  BranchProtectionService branchProtectionService
+  @Autowired
+  SchemaValidator schemaValidator
+  @Autowired
+  ContentHelper contentHelper
 
   @Autowired
   VitalsFileService(
-      GitHub github,
-      PomParserService pomParserService,
-      ComplianceFileService complianceFileService,
-      OptumFileService optumFileService,
-      BranchProtectionService branchProtectionService,
-      SchemaValidator schemaValidator,
       @Value('${uhg.vitals-file.schema}') String vitalsFileSchemaUrl,
       @Value('${classpath:vitals_yaml_schema.json}') ClassPathResource localSchemaJson) {
-    this.github = github
-    this.pomParserService = pomParserService
-    this.complianceFileService = complianceFileService
-    this.optumFileService = optumFileService
-    this.branchProtectionService = branchProtectionService
-    this.schemaValidator = schemaValidator
 
     try (BufferedInputStream inputStream = new BufferedInputStream(new URL(vitalsFileSchemaUrl).openStream())) {
       this.remoteVitalsFileSchema = StreamUtils.copyToString(inputStream, UTF_8)
@@ -187,6 +183,7 @@ class VitalsFileService {
     return updatedRepo
   }
 
+  @CacheEvict(value = "ghContent", key = "#repo.fullName+'/vitals.yaml'")
   Optional<GHContent> updateExistingVitalsFile(GHRepository repo, VitalsFile newVitalsFile) throws IOException {
     Optional<GHContent> vitalsFileOptional = this.getExistingVitalsFile(repo)
     if (vitalsFileOptional.present) {
@@ -198,22 +195,7 @@ class VitalsFileService {
   }
 
   Optional<GHContent> getExistingVitalsFile(GHRepository repo) throws IOException {
-    return this.lookupGHContent(repo, '/', VITALS_FILE)
-  }
-
-  Optional<GHContent> lookupGHContent(GHRepository repo, String directory, String fileName) throws IOException {
-    Optional<GHContent> content
-    try {
-      List<GHContent> contentList =
-          repo.getDirectoryContent(directory).stream()
-              .filter(ghContent -> ghContent.name == fileName)
-              .toList()
-      content = contentList.stream().findFirst()
-    } catch (GHFileNotFoundException e) {
-      log.warn('Unable to find {}{} in repository {}', directory, fileName, repo.getHtmlUrl(), e)
-      content = Optional.empty()
-    }
-    return content
+    return contentHelper.getFileContent(repo, '/', VITALS_FILE)
   }
 
   Set<ValidationMessage> validateVitalsFile(GHContent vitalsFileContent) throws IOException {
