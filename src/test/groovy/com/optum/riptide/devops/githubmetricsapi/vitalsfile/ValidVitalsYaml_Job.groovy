@@ -44,11 +44,20 @@ class ValidVitalsYaml_Job extends Specification {
     csvData.size() > 0
 
     where: 'examples to execute'
-    orgName        | sheetName      | outputFileName
-//    'riptide-deprecated-apps' | 'riptide-deprecated-apps' | 'riptide-deprecated-apps_vitals_file_schema_validation.xlsx'
-//    'riptide-devops' | 'riptide-devops' | 'riptide-devops_vitals_file_schema_validation.xlsx'
-//    'riptide-poc'             | 'riptide-poc'             | 'riptide-poc_vitals_file_schema_validation.xlsx'
-    'riptide-team' | 'riptide-team' | 'riptide-team_vitals_file_schema_validation.xlsx'
+    orgName | sheetName | outputFileName
+//    'iset'  | 'vitals_file_schema_validation' | 'iset_vitals_file_schema_validation.xlsx'
+//    'riptide-team'            | 'vitals_file_schema_validation' | 'riptide-team_vitals_file_schema_validation.xlsx'
+//    'riptide-devops'          | 'vitals_file_schema_validation' | 'riptide-devops_vitals_file_schema_validation.xlsx'
+//    'riptide-poc'             | 'vitals_file_schema_validation' | 'riptide-poc_vitals_file_schema_validation.xlsx'
+//    'riptide-team-microsite'  | 'vitals_file_schema_validation' | 'riptide-team-microsite_vitals_file_schema_validation.xlsx'
+//    'riptide-deprecated-apps' | 'vitals_file_schema_validation' | 'riptide-deprecated-apps_vitals_file_schema_validation.xlsx'
+//    'UHC-Motion'              | 'vitals_file_schema_validation' | 'UHC-Motion_vitals_file_schema_validation.xlsx'
+//    'DigitalMemberships'      | 'vitals_file_schema_validation' | 'DigitalMemberships_vitals_file_schema_validation.xlsx'
+//    'acet-salesforce'         | 'vitals_file_schema_validation' | 'acet-salesforce_vitals_file_schema_validation.xlsx'
+//    'ACET-Middleware'         | 'vitals_file_schema_validation' | 'ACET-Middleware_vitals_file_schema_validation.xlsx'
+//    'pact-salesforce'         | 'vitals_file_schema_validation' | 'pact-salesforce_vitals_file_schema_validation.xlsx'
+//    'PACT-Middleware'         | 'vitals_file_schema_validation' | 'PACT-Middleware_vitals_file_schema_validation.xlsx'
+//    'ACET-Automation'         | 'vitals_file_schema_validation' | 'ACET-Automation_vitals_file_schema_validation.xlsx'
   }
 
   def "Validate vitals.yaml in multiple orgs and output one sheet"() {
@@ -94,21 +103,23 @@ class ValidVitalsYaml_Job extends Specification {
     repositories.parallelStream()
         .map(
             repo -> {
-              def vitalsFileDetails
-              def vitalsFileContent = vitalsFileService.getExistingVitalsFile(repo)
-              def vitalsFileHtmlUrl
-              if (vitalsFileContent.isPresent()) {
-                vitalsFileHtmlUrl = vitalsFileContent.get().getHtmlUrl()
-                def validationMessage = vitalsFileService.validateVitalsFile(vitalsFileContent.get())
-                if (validationMessage.size() == 0) {
-                  vitalsFileDetails = 'Valid'
-                } else {
-                  def validationMessagesStrings = schemaValidator.validationMessagesStrings(validationMessage)
-                  vitalsFileDetails = "$validationMessagesStrings"
-                }
+              def vitalsFileHtmlUrl = repo.getHtmlUrl()
+              def vitalsFileDetails = 'Not Found'
+
+              if (repo.isArchived()) {
+                vitalsFileDetails = 'Repo is Archived'
               } else {
-                vitalsFileHtmlUrl = repo.getHtmlUrl()
-                vitalsFileDetails = 'Not Found'
+                def vitalsFileContent = vitalsFileService.getExistingVitalsFile(repo)
+                if (vitalsFileContent.isPresent()) {
+                  vitalsFileHtmlUrl = vitalsFileContent.get().getHtmlUrl()
+                  def validationMessage = vitalsFileService.validateVitalsFile(vitalsFileContent.get())
+                  if (validationMessage.size() == 0) {
+                    vitalsFileDetails = 'Valid'
+                  } else {
+                    def validationMessagesStrings = schemaValidator.validationMessagesStrings(validationMessage)
+                    vitalsFileDetails = "$validationMessagesStrings"
+                  }
+                }
               }
               def csvRow = [repo.getFullName()?.trim() ?: "${repo.getOwner()}/${repo.getName()}", vitalsFileHtmlUrl, vitalsFileDetails as String]
               csvData.add(csvRow)

@@ -21,12 +21,12 @@ class VitalsFile {
     this.apiVersion = map.apiVersion
     this.metadata = new Metadata()
 
-    if (map.metadata.askId instanceof Set && map.metadata.askId?.size() > 0) {
+    if (map.metadata.askId instanceof Collection && map.metadata.askId?.size() > 0) {
       // Set type is preferred
-      this.metadata.askId = map.metadata.askId
+      this.metadata.setAskId(map.metadata.askId as Set)
     } else if (map.metadata.askId instanceof String && map.metadata.askId?.trim()) {
       // String type is still supported
-      this.metadata.askId = map.metadata.askId
+      this.metadata.setAskId(map.metadata.askId as String)
     } else {
       // fallback to default value.
       this.metadata.setAskId(this.metadata.askId)

@@ -27,7 +27,7 @@ class CerberusScanService {
    */
   def asyncCerberusScan(GHRepository repo) {
     // repo.getFullName() isn't always reliable so manually templating name:
-    def repoFullName = "${repo.getOwner()}/${repo.getName()}"
+    def repoFullName = "${repo.getOwnerName()}/${repo.getName()}"
     def scanUrl = "$uhgCerberusApi/$repoFullName"
     WebClient.UriSpec<WebClient.RequestBodySpec> uriSpec = client.get()
     WebClient.RequestBodySpec bodySpec = uriSpec.uri(scanUrl)
@@ -46,10 +46,14 @@ class CerberusScanService {
 
   def cerberusScan(GHRepository repo) {
     // repo.getFullName() isn't always reliable so manually templating name:
-    def repoFullName = "${repo.getOwner()}/${repo.getName()}"
+    def repoFullName = "${repo.getOwnerName()}/${repo.getName()}"
     def scanUrl = "$uhgCerberusApi/$repoFullName"
     def responseString = restTemplateFactory.getRestTemplate(scanUrl).getForObject(new URI(scanUrl), String.class)
-    log.info("Cerberus-Scan Response from {} = \n{}", scanUrl, responseString)
+    if (responseString.contains('is valid vitals.yaml: True')) {
+      log.debug("Cerberus-Scan Response from {} = \n{}", scanUrl, responseString)
+    } else {
+      log.warn("Cerberus-Scan Response from {} = \n{}", scanUrl, responseString)
+    }
     return responseString
   }
 }
