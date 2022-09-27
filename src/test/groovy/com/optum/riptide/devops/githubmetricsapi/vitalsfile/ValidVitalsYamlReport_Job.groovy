@@ -20,7 +20,7 @@ import java.time.LocalDateTime
 @SpringBootTest
 @Slf4j
 @ActiveProfiles(['compiletime-tests'])
-class ValidVitalsYaml_Job extends Specification {
+class ValidVitalsYamlReport_Job extends Specification {
   @Autowired
   GitHub githubEnterprise
   @Autowired
