@@ -89,6 +89,7 @@ class UpdateVitalsFilesInOrg_Job extends Specification {
                    */
                   vitalsFile.apiVersion = 'v1'
                   vitalsFile.metadata.setAskId(askId)
+
                   if (lookupProjectKey) {
                     vitalsFile.metadata.projectKey = pomParserService.readProjectKey(repo, '/pom.xml')
                   }
@@ -131,9 +132,9 @@ class UpdateVitalsFilesInOrg_Job extends Specification {
 
     where:
     orgName | askId | overrideCaAgileId | caAgileId | lookupProjectKey | lookupProjectFriendlyName
-//    'riptide-deprecated-apps' | ['~']               | false             | 'do not use rally or use other system' | true             | true
+//    'riptide-deprecated-apps' | [null] | false             | 'do not use rally or use other system' | true             | true
 //    'riptide-devops'          | ['UHGWM110-017197'] | false             | ''                                     | false             | false
-//    'riptide-poc'             | ['~']               | false             | 'do not use rally or use other system' | true             | true
+//    'riptide-poc'             | [null]               | false             | 'do not use rally or use other system' | true             | true
 //    'riptide-team'            | ['UHGWM110-017197'] | false             | ''                                     | true             | true
 //    'riptide-team-microsite'  | ['UHGWM110-017197'] | false             | ''                                     | true             | true
 //    'iset'                    | ['UHGWM110-000465'] | false             | ''                                     | false            | false
