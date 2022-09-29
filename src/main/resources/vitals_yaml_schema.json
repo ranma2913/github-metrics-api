@@ -2,18 +2,43 @@
   "$schema": "http://json-schema.org/draft-07/schema",
   "$id": "http://example.com/example.json",
   "type": "object",
-  "title": "The root schema",
-  "description": "The root schema comprises the entire JSON document.",
+  "title": "HCP Vitals file schema.",
+  "description": "Read more here: https://github.optum.com/pages/optum-engineering-experience/HCP-Documentation/engineering-excellence/overview",
   "oneOf": [
     {
       "examples": [
         {
           "apiVersion": "v1",
           "metadata": {
-            "askId": "UHGWM###-######",
+            "askId": [
+              "AIDE_#######",
+              "UHGWM###-######"
+            ],
             "caAgileId": "poc",
-            "projectKey": "com.optum.yourApp.yourComponent",
-            "projectFriendlyName": "YourApp-SomeComponent",
+            "projectKey": "com.optum.yourapp.yourcomponent",
+            "projectFriendlyName": "yourapp-yourcomponent",
+            "componentType": "code",
+            "targetQG": "GATE_00"
+          }
+        },
+        {
+          "apiVersion": "v1",
+          "metadata": {
+            "askId": "AIDE_#######",
+            "caAgileId": "poc",
+            "projectKey": "com.optum.yourapp.yourcomponent",
+            "projectFriendlyName": "yourapp-yourcomponent",
+            "componentType": "code",
+            "targetQG": "GATE_00"
+          }
+        },
+        {
+          "apiVersion": "v1",
+          "metadata": {
+            "askId": null,
+            "caAgileId": "poc",
+            "projectKey": "com.optum.yourapp.yourcomponent",
+            "projectFriendlyName": "yourapp-yourcomponent",
             "componentType": "code",
             "targetQG": "GATE_00"
           }
@@ -27,11 +52,11 @@
         "apiVersion": {
           "$id": "#/properties/apiVersion",
           "type": "string",
+          "title": "Vitals file apiVersion",
+          "description": "currently the only versions supported are in the enum field.",
           "enum": [
             "v1"
           ],
-          "title": "The apiVersion schema",
-          "description": "A declaration of the API Version",
           "default": "",
           "examples": [
             "v1"
@@ -40,15 +65,34 @@
         "metadata": {
           "$id": "#/properties/metadata",
           "type": "object",
-          "title": "The metadata schema",
-          "description": "Grouping of key pair values",
+          "title": "metadata object contains values needed for vitals file.",
+          "description": "This will contain details about your component.",
           "default": {},
           "examples": [
             {
-              "askId": "UHGWM###-######",
+              "askId": [
+                "AIDE_#######",
+                "UHGWM###-######"
+              ],
               "caAgileId": "poc",
-              "projectKey": "com.optum.yourApp.yourComponent",
-              "projectFriendlyName": "YourApp-SomeComponent",
+              "projectKey": "com.optum.yourapp.yourcomponent",
+              "projectFriendlyName": "yourapp-yourcomponent",
+              "componentType": "code",
+              "targetQG": "GATE_00"
+            },
+            {
+              "askId": "AIDE_#######",
+              "caAgileId": "poc",
+              "projectKey": "com.optum.yourapp.yourcomponent",
+              "projectFriendlyName": "yourapp-yourcomponent",
+              "componentType": "code",
+              "targetQG": "GATE_00"
+            },
+            {
+              "askId": null,
+              "caAgileId": "poc",
+              "projectKey": "com.optum.yourapp.yourcomponent",
+              "projectFriendlyName": "yourapp-yourcomponent",
               "componentType": "code",
               "targetQG": "GATE_00"
             }
@@ -64,186 +108,95 @@
           "properties": {
             "askId": {
               "$id": "#/properties/metadata/properties/askId",
-              "type": "string",
-              "title": "The askId schema",
-              "description": "Unique Application Identifier via the ASK System.",
+              "type": [
+                "array",
+                "string",
+                "null"
+              ],
+              "title": "askId (AIDE ID)",
+              "description": "askId: Enter your ASK ID (examples: UHGWM110-006715 or AIDE_0074671). To look up your ASK ID, you can go here: [AIDE Portal](https://aide.optum.com/) and enter the name of your application in the search box. You will then see a field 'ASK Global Id' where you will see the application's ASK ID. If your project is a proof of concept and does not yet have an ASK ID, you can use 'poc' until your project requests an ASK ID. If the contents of your repository are not associated with an ASK ID, and never will be (example: documentation micro-site that is not application specific, such as appsec.optum.com), you may use the yaml file standard for null values (either null [no quotes] or the single character ~ [no quotes]. If your repository contains code for multiple ASK IDs, use a yaml file list to list the related ASK IDs.",
               "default": "",
               "examples": [
-                "UHGWM###-######"
-              ]
-            },
-            "caAgileId": {
-              "$id": "#/properties/metadata/properties/caAgileId",
-              "type": "string",
-              "title": "The caAgileId schema",
-              "description": "A unique CA Rally Agile Identifier",
-              "default": "",
-              "examples": [
-                "poc"
-              ]
-            },
-            "projectKey": {
-              "$id": "#/properties/metadata/properties/projectKey",
-              "type": "string",
-              "title": "The projectKey schema",
-              "description": "A unique Project Identifier",
-              "default": "",
-              "examples": [
-                "com.optum.yourApp.yourComponent"
-              ]
-            },
-            "projectFriendlyName": {
-              "$id": "#/properties/metadata/properties/projectFriendlyName",
-              "type": "string",
-              "title": "The projectFriendlyName schema",
-              "description": "A human friendly name",
-              "default": "",
-              "examples": [
-                "YourApp-SomeComponent"
-              ]
-            },
-            "componentType": {
-              "$id": "#/properties/metadata/properties/componentType",
-              "type": "string",
-              "title": "The componentType schema",
-              "description": "Options: code, database, infrastructure, config, other",
-              "default": "",
-              "examples": [
-                "code"
-              ]
-            },
-            "targetQG": {
-              "$id": "#/properties/metadata/properties/targetQG",
-              "type": "string",
-              "title": "The targetQG schema",
-              "description": "This is the Sonar Quality Gate that your team has targeted to achieve .",
-              "default": "",
-              "examples": [
-                "GATE_00"
-              ]
-            }
-          },
-          "additionalProperties": true
-        }
-      }
-    },
-    {
-      "examples": [
-        {
-          "apiVersion": "v1",
-          "metadata": {
-            "askId": "UHGWM###-######",
-            "caAgileId": "poc",
-            "projectKey": "com.optum.yourApp.yourComponent",
-            "projectFriendlyName": "YourApp-SomeComponent",
-            "componentType": "code",
-            "targetQG": "GATE_00"
-          }
-        }
-      ],
-      "required": [
-        "apiVersion",
-        "metadata"
-      ],
-      "properties": {
-        "apiVersion": {
-          "$id": "#/properties/apiVersion",
-          "type": "string",
-          "enum": [
-            "v1"
-          ],
-          "title": "The apiVersion schema",
-          "description": "A declaration of the API Version",
-          "default": "",
-          "examples": [
-            "v1"
-          ]
-        },
-        "metadata": {
-          "$id": "#/properties/metadata2",
-          "type": "object",
-          "title": "The metadata schema",
-          "description": "Grouping of key pair values",
-          "default": {},
-          "examples": [
-            {
-              "askId": "[\"AIDE_######\"]",
-              "caAgileId": "poc",
-              "projectKey": "com.optum.yourApp.yourComponent",
-              "projectFriendlyName": "YourApp-SomeComponent",
-              "componentType": "code",
-              "targetQG": "GATE_00"
-            }
-          ],
-          "required": [
-            "askId",
-            "caAgileId",
-            "projectKey",
-            "projectFriendlyName",
-            "componentType",
-            "targetQG"
-          ],
-          "properties": {
-            "askId": {
-              "$id": "#/properties/metadata/properties/askIdArray",
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "title": "The askId schema",
-              "description": "Unique Application Identifier via the ASK System.",
-              "default": "",
-              "examples": [
+                "UHGWM###-######",
                 [
-                  "AIDE_######"
-                ]
+                  "AIDE_#######",
+                  "UHGWM###-######"
+                ],
+                null
               ]
             },
             "caAgileId": {
               "$id": "#/properties/metadata/properties/caAgileId",
               "type": "string",
-              "title": "The caAgileId schema",
-              "description": "A unique CA Rally Agile Identifier",
+              "title": "caAgileId (rallyWorkspaceId)",
+              "description": "caAgileId: Enter your Rally caAgileId. If you do use Rally to track the User Stories for your project then you can login here and navigate to your project. The URL will look something like this https://rally1.rallydev.com/#/119066050240d/dashboard. The number part of the URL will be your CA Agile ID. In the example above the caAgileId is 119066050240d. If you do NOT use Rally in relation to this repository then just use 'do not use rally or use other system' for this field.",
               "default": "",
               "examples": [
-                "poc"
+                "119066050240d",
+                "poc",
+                "do not use rally or use other system"
               ]
             },
             "projectKey": {
               "$id": "#/properties/metadata/properties/projectKey",
               "type": "string",
-              "title": "The projectKey schema",
-              "description": "A unique Project Identifier",
+              "title": "projectKey (sonar id)",
+              "description": "projectKey: This should be unique across UHG. If you use Maven then this would be your groupId + colon + artifactId. It is important that you use the same key that is used for your sonar scans. Look at your project page in Sonar and find the \"key\". This is what you should use here. If your repository is not associated with a UHG project, enter a null value here. ",
               "default": "",
               "examples": [
-                "com.optum.yourApp.yourComponent"
+                "com.optum.yourapp:yourcomponent",
+                "com.optum.ecm:ecm-webapp",
+                "com.optum.ecm:ecm-microservice",
+                "com.optum.ecm:ecm-adminui"
               ]
             },
             "projectFriendlyName": {
               "$id": "#/properties/metadata/properties/projectFriendlyName",
               "type": "string",
-              "title": "The projectFriendlyName schema",
-              "description": "A human friendly name",
+              "title": "projectFriendlyName (short product Identifier, human readable)",
+              "description": "projectFriendlyName: In Maven, the component name would be equivalent to your artifactId in your POM. If your repository is not associated with a UHG project, enter a null value here.",
               "default": "",
               "examples": [
-                "YourApp-SomeComponent"
+                "yourcomponent",
+                "ecm-webapp",
+                "ecm-microservice",
+                "ecm-adminui"
               ]
             },
             "componentType": {
               "$id": "#/properties/metadata/properties/componentType",
               "type": "string",
-              "title": "The componentType schema",
-              "description": "Options: code, database, infrastructure, config, other",
+              "title": "componentType (primary content type of your repo)",
+              "description": "Value code (java, c, go, js, etc), db (sql, etc), iac (infrastructure as code), policy (policy as code), docs (documentation), other (if the contents fit none of the other options.)",
               "default": "",
               "examples": [
-                "code"
+                "code",
+                "db",
+                "iac",
+                "policy",
+                "docs",
+                "other"
               ]
             },
             "targetQG": {
               "$id": "#/properties/metadata/properties/targetQG",
               "type": "string",
-              "title": "The targetQG schema",
-              "description": "This is the Sonar Quality Gate that your team has targeted to achieve .",
+              "title": "targetQG (Sonar Quality Gate EOY Target)",
+              "description": "This is the Sonar Quality Gate that your team has targeted to achieve by the end of the current year. @see https://sonar.optum.com/quality_gates. Use GATE_EXEMPT for assets (documentation, policy, other) that do not contain application source code or scripts and are not subject to Quality Gating or are not required to utilized SonarQube for quality assurance. If your project is subject to SonarQube quality scanning, but you have not utilized SonarQube, use GATE_00 for now. See Sonar Quality Gates to review the Quality Gates in Sonar.",
+              "enum": [
+                "GATE_00",
+                "GATE_01",
+                "GATE_02",
+                "GATE_03",
+                "GATE_04",
+                "GATE_05",
+                "GATE_06",
+                "GATE_07",
+                "GATE_08",
+                "GATE_09",
+                "GATE_EXEMPT",
+                "ADOPTION"
+              ],
               "default": "",
               "examples": [
                 "GATE_00"
