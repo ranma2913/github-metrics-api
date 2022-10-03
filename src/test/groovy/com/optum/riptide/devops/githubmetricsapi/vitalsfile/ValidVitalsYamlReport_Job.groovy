@@ -101,18 +101,17 @@ class ValidVitalsYamlReport_Job extends Specification {
     GHOrganization org = githubEnterprise.getOrganization(orgName)
     List<GHRepository> repositories = org.listRepositories(100).toList()
     repositories.parallelStream()
-        .map(
-            repo -> {
-              def vitalsFileHtmlUrl = repo.getHtmlUrl()
-              def vitalsFileDetails = 'Not Found'
+        .map(repo -> {
+          def vitalsFileHtmlUrl = repo.getHtmlUrl()
+          def vitalsFileDetails = 'Not Found'
 
-              if (repo.isArchived()) {
-                vitalsFileDetails = 'Repo is Archived'
-              } else {
-                def vitalsFileContent = vitalsFileService.getExistingVitalsFile(repo)
-                if (vitalsFileContent.isPresent()) {
-                  vitalsFileHtmlUrl = vitalsFileContent.get().getHtmlUrl()
-                  def validationMessage = vitalsFileService.validateVitalsFile(vitalsFileContent.get())
+          if (repo.isArchived()) {
+            vitalsFileDetails = 'Repo is Archived'
+          } else {
+            def vitalsFileContent = vitalsFileService.getExistingVitalsFile(repo)
+            if (vitalsFileContent.isPresent()) {
+              vitalsFileHtmlUrl = vitalsFileContent.get().getHtmlUrl()
+              def validationMessage = vitalsFileService.validateVitalsFile(vitalsFileContent.get())
                   if (validationMessage.size() == 0) {
                     vitalsFileDetails = 'Valid'
                   } else {

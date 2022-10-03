@@ -1,5 +1,6 @@
 package com.optum.riptide.devops.githubmetricsapi.utils
 
+import groovy.util.logging.Slf4j
 import org.apache.poi.common.usermodel.HyperlinkType
 import org.apache.poi.ss.SpreadsheetVersion
 import org.apache.poi.ss.usermodel.CellType
@@ -23,6 +24,7 @@ import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTTableStyleInfo
 import java.nio.file.Files
 import java.nio.file.Path
 
+@Slf4j
 class FileWriterUtil {
   static def writeCsvFile(Path outputFilePath, List<List<String>> csvData) {
     def csvDataRows = csvData*.join(',')
@@ -32,7 +34,7 @@ class FileWriterUtil {
   /**
    * @see https://thinktibits.blogspot.com/2014/09/Excel-Insert-Format-Table-Apache-POI-Example.html
    */
-  static def writeSimpleXlsxFile(Path outputFilePath, List<String> csvHeadRow, List<List<String>> csvData, String sheetName) {
+  static def writeSimpleXlsxFile(Path outputFilePath, List<String> headerRowData, List<List<String>> rowData, String sheetName) {
     /* Start with Creating a workbook and worksheet object */
     XSSFWorkbook wb = new XSSFWorkbook()
     CreationHelper createHelper = wb.getCreationHelper()
@@ -43,18 +45,20 @@ class FileWriterUtil {
     hlinkfont.setColor(IndexedColors.BLUE.index)
     hlinkstyle.setFont(hlinkfont)
 
+    // create the worksheet
     XSSFSheet sheet = wb.createSheet(sheetName)
 
+    // create the reader row
     XSSFRow headerRow = sheet.createRow(0)
     XSSFCell headerNameCell = headerRow.createCell(0, CellType.STRING)
-    headerNameCell.setCellValue(csvHeadRow[0])
+    headerNameCell.setCellValue(headerRowData[0])
     XSSFCell headerUrlCell = headerRow.createCell(1, CellType.STRING)
-    headerUrlCell.setCellValue(csvHeadRow[1])
+    headerUrlCell.setCellValue(headerRowData[1])
     XSSFCell headerDefaultBranchCell = headerRow.createCell(2, CellType.STRING)
-    headerDefaultBranchCell.setCellValue(csvHeadRow[2])
+    headerDefaultBranchCell.setCellValue(headerRowData[2])
 
     /* Add remaining Table Data */
-    for (List<String> csvRow in csvData) {
+    for (List<String> csvRow in rowData) {
       XSSFRow row = sheet.createRow(sheet.getLastRowNum() + 1)
       XSSFCell nameCell = row.createCell(0, CellType.STRING)
       nameCell.setCellValue(csvRow[0])
@@ -72,7 +76,7 @@ class FileWriterUtil {
     }
 
 /* Auto Size Column Width now that all data is added */
-    for (int i = 0; i < csvHeadRow.size(); i++) {
+    for (int i = 0; i < headerRowData.size(); i++) {
       sheet.autoSizeColumn(i)
     }
 
@@ -82,6 +86,58 @@ class FileWriterUtil {
     }
     return outputFilePath
   }
+
+  static def writeXlsxFile(Path path, List<CellProps> headerRowData, List<List<CellProps>> rowDataList, String sheetName) {
+    /* Start with Creating a workbook and worksheet object */
+    XSSFWorkbook wb = new XSSFWorkbook()
+
+    // Setup Hyperlink Style
+    XSSFCellStyle linkStyle = wb.createCellStyle()
+    XSSFFont linkFont = wb.createFont()
+    linkFont.setUnderline(XSSFFont.U_SINGLE)
+    linkFont.setColor(IndexedColors.BLUE.index)
+    linkStyle.setFont(linkFont)
+
+    // create the worksheet
+    XSSFSheet sheet = wb.createSheet(sheetName)
+
+    // create the reader row
+    XSSFRow headerRow = createRow(sheet, headerRowData, linkStyle)
+    /* Add remaining Table Data */
+    for (List<CellProps> rowData in rowDataList) {
+      createRow(sheet, rowData, linkStyle)
+    }
+
+    /* Auto Size Column Width now that all data is added */
+    for (int i = 0; i < headerRowData.size(); i++) {
+      sheet.autoSizeColumn(i)
+    }
+
+    /* Write output as File */
+    try (FileOutputStream fileOutputStream = new FileOutputStream(path.toString())) {
+      wb.write(fileOutputStream)
+    }
+    return path
+  }
+
+  static XSSFRow createRow(XSSFSheet sheet, List<CellProps> rowData, XSSFCellStyle linkStyle) {
+    XSSFRow row = sheet.createRow(sheet.getLastRowNum() + 1)
+    rowData.eachWithIndex { cellProps, i ->
+      XSSFCell cell = row.createCell(i, cellProps.getCellType())
+      if (cellProps.getCellTypeString() == 'URL') {
+        cell.setCellValue(cellProps.displayValue)
+        XSSFHyperlink link = (XSSFHyperlink) row.getSheet().getWorkbook()
+            .getCreationHelper().createHyperlink(HyperlinkType.URL)
+        link.setAddress(new URL("$cellProps.value").toString())
+        cell.setHyperlink((XSSFHyperlink) link)
+        cell.setCellStyle(linkStyle)
+      } else {
+        cell.setCellValue(cellProps.value)
+      }
+    }
+    return row
+  }
+
 
   /**
    * currently not working.
@@ -160,5 +216,6 @@ class FileWriterUtil {
       wb.write(fileOutputStream)
     }
   }
+
 
 }
