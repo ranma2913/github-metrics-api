@@ -33,6 +33,8 @@ class PasswordVaultingReport_Job extends Specification {
     // Header Row
     List<CellProps> headerRow = [
         new CellProps('Repository', 'String'),
+        new CellProps('Default Branch', 'String'),
+        new CellProps('isSpringBoot', 'String'),
         new CellProps('hasDatabase', 'String'),
         new CellProps('hasVault', 'String')
     ]
@@ -48,6 +50,7 @@ class PasswordVaultingReport_Job extends Specification {
         .map(repo -> {
 
           log.info("Processing repository {} of {}. URL = {}", processedCount.incrementAndGet(), repositories.size(), repo.htmlUrl)
+          boolean isSpringBoot = false
           boolean hasDatabase = false
           boolean hasVault = false
           Optional<GHContent> pomContentOptional = pomParserService.getPomFileContent(repo, 'pom.xml')
@@ -56,6 +59,9 @@ class PasswordVaultingReport_Job extends Specification {
             rootDependencies = pomParserService.readDependenciesRecursive(pomContentOptional.get())
             if (rootDependencies.isPresent()) {
               for (dependency in rootDependencies.get()) {
+                if (dependency.artifactId.text().contains('spring-boot-starter')) {
+                  isSpringBoot = true
+                }
                 if (dependency.artifactId.text().contains('mysql')) {
                   hasDatabase = true
                 }
@@ -68,7 +74,9 @@ class PasswordVaultingReport_Job extends Specification {
 
           // data rows
           List<CellProps> dataRow = [
-              new CellProps("${repo.getHtmlUrl()}", "${(repo.getFullName()?.trim() ?: "${repo.getOwner()}/${repo.getName()}")}", 'URL'),
+              new CellProps("${(repo.getFullName()?.trim() ?: "${repo.getOwner()}/${repo.getName()}")}", 'String'),
+              new CellProps("${repo.getHtmlUrl()}", "${repo.getDefaultBranch()}", 'URL'),
+              new CellProps("$isSpringBoot", 'BOOLEAN'),
               new CellProps("$hasDatabase", 'BOOLEAN'),
               new CellProps("$hasVault", 'BOOLEAN')
           ]
@@ -84,11 +92,11 @@ class PasswordVaultingReport_Job extends Specification {
     dataRows.size() == repositories.size()
 
     where: 'examples to execute'
-    orgName       | sheetName                | outputFileName
+    orgName        | sheetName                | outputFileName
 //    'iset'  | 'mysql and vault report' | 'iset mysql and vault report.xlsx'
-//    'riptide-team' | 'mysql and vault report' | 'riptide-team mysql and vault report.xlsx'
+    'riptide-team' | 'mysql and vault report' | 'riptide-team mysql and vault report.xlsx'
 //    'riptide-devops'          | 'mysql and vault report' | 'riptide-devops mysql and vault report.xlsx'
-    'riptide-poc' | 'mysql and vault report' | 'riptide-poc mysql and vault report.xlsx'
+//    'riptide-poc' | 'mysql and vault report' | 'riptide-poc mysql and vault report.xlsx'
 //    'riptide-team-microsite'  | 'mysql and vault report' | 'riptide-team-microsite mysql and vault report.xlsx'
 //    'riptide-deprecated-apps' | 'mysql and vault report' | 'riptide-deprecated-apps mysql and vault report.xlsx'
 //    'UHC-Motion'              | 'mysql and vault report' | 'UHC-Motion mysql and vault report.xlsx'
