@@ -29,7 +29,7 @@ class PomParserService {
       Model pomModel = pomParser.parse(pomContentOptional.get().read())
 
       if (pomModel.getArtifactId().contains('-parent')) {
-        pomContentOptional = this.getServicePomContent(repo, pomContentOptional)
+        pomContentOptional = this.getServicePomContent(pomContentOptional.get())
         if (pomContentOptional.isPresent()) {
           def servicePomContent = pomContentOptional.get()
           projectKey = this.readProjectKey(repo, servicePomContent.getPath())
@@ -73,7 +73,7 @@ class PomParserService {
     // lookup service pom.xml
     for (module in project.modules.module) {
       if (!module.text().contains('-atdd')) {
-        def servicePomPath = "/${module.text()}/pom.xml"
+        def servicePomPath = "/${module.text().trim()}/pom.xml"
         def contentOptional = this.getPomFileContent(pomContent.getOwner(), servicePomPath)
         if (contentOptional.isPresent()) {
           servicePomContent = contentOptional

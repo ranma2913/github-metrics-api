@@ -1,19 +1,23 @@
 package com.optum.riptide.devops.githubmetricsapi.vitalsfile
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.networknt.schema.CustomErrorMessageType
 import com.networknt.schema.ValidationMessage
 import com.optum.riptide.devops.githubmetricsapi.branch.protection.BranchProtectionService
+import com.optum.riptide.devops.githubmetricsapi.cerberus.CerberusScanService
 import com.optum.riptide.devops.githubmetricsapi.compliance.ComplianceFileService
 import com.optum.riptide.devops.githubmetricsapi.content.ContentHelper
 import com.optum.riptide.devops.githubmetricsapi.maven.PomParserService
 import com.optum.riptide.devops.githubmetricsapi.optumfile.OptumFileService
 import com.optum.riptide.devops.githubmetricsapi.schema.SchemaValidator
 import groovy.util.logging.Slf4j
+import groovy.yaml.YamlSlurper
 import org.apache.commons.lang3.StringUtils
 import org.kohsuke.github.GHBranch
 import org.kohsuke.github.GHBranchProtection
+import org.kohsuke.github.GHCommit
 import org.kohsuke.github.GHContent
 import org.kohsuke.github.GHContentUpdateResponse
 import org.kohsuke.github.GHRepository
@@ -27,6 +31,7 @@ import org.springframework.util.StreamUtils
 import reactor.core.publisher.Flux
 
 import java.text.MessageFormat
+import java.util.concurrent.CompletableFuture
 
 import static com.optum.riptide.devops.githubmetricsapi.Constants.POM_FILE
 import static com.optum.riptide.devops.githubmetricsapi.Constants.VITALS_FILE
@@ -37,6 +42,7 @@ import static java.nio.charset.StandardCharsets.UTF_8
 class VitalsFileService {
   String localVitalsFileSchema
   String remoteVitalsFileSchema
+  YamlSlurper yamlSlurper
   @Autowired
   GitHub github
   @Autowired
@@ -51,11 +57,15 @@ class VitalsFileService {
   SchemaValidator schemaValidator
   @Autowired
   ContentHelper contentHelper
+  @Autowired
+  CerberusScanService cerberusScanService
 
   @Autowired
   VitalsFileService(
       @Value('${uhg.vitals-file.schema}') String vitalsFileSchemaUrl,
       @Value('${classpath:vitals_yaml_schema.json}') ClassPathResource localSchemaJson) {
+
+    yamlSlurper = new YamlSlurper()
 
     try (BufferedInputStream inputStream = new BufferedInputStream(new URL(vitalsFileSchemaUrl).openStream())) {
       this.remoteVitalsFileSchema = StreamUtils.copyToString(inputStream, UTF_8)
@@ -84,13 +94,11 @@ class VitalsFileService {
     return Flux.fromIterable(updatedRepositories)
   }
 
-  Flux<GHRepository> createMissingVitalsFilesInOrg(String org, boolean enablePoc)
-      throws IOException {
+  Flux<GHRepository> createMissingVitalsFilesInOrg(String org, boolean enablePoc) throws IOException {
     return this.createMissingVitalsFilesInOrg(org, enablePoc, false)
   }
 
-  Flux<GHRepository> createMissingVitalsFilesInOrg(
-      String org, boolean enablePoc, boolean overrideBranchProtection) throws IOException {
+  Flux<GHRepository> createMissingVitalsFilesInOrg(String org, boolean enablePoc, boolean overrideBranchProtection) throws IOException {
 
     List<GHRepository> updatedRepositories
     List<GHRepository> repositories = github.getOrganization(org).listRepositories(100).toList()
@@ -213,5 +221,79 @@ class VitalsFileService {
       validationMessages.add(customValidationMessage)
     }
     return validationMessages
+  }
+
+  Optional<GHContent> forceUpdateVitalsFile(GHRepository repo, List<String> askIds,
+                                            boolean overrideCaAgileId, String caAgileId,
+                                            boolean lookupProjectKey, boolean lookupProjectFriendlyName) {
+    Optional<GHContent> responseOptional
+    if (!repo.isArchived()) {
+      try {
+        Optional<GHContent> vitalsFileContentOptional = this.getExistingVitalsFile(repo)
+        VitalsFile origVitalsFile
+        VitalsFile vitalsFile
+        if (vitalsFileContentOptional.isPresent()) {
+          GHContent vitalsFileContent = vitalsFileContentOptional.get()
+          origVitalsFile = new VitalsFile(yamlSlurper.parse(vitalsFileContent.read()) as Map)
+          vitalsFile = origVitalsFile.clone()
+
+          if (overrideCaAgileId) {
+            vitalsFile.metadata.caAgileId = caAgileId
+          } else if ('poc' == vitalsFile.metadata.caAgileId) {
+            // Check history of vitals file for caAgileId
+            List<GHCommit> vitalsCommits = repo.queryCommits().pageSize(50).path('vitals.yaml').list().toList()
+            for (GHCommit commit in vitalsCommits) {
+              def commitSha = commit.SHA1
+              try {
+                def historicVitals = yamlSlurper.parse(repo.getFileContent('vitals.yaml', commitSha).read())
+                if (historicVitals.metadata.caAgileId != 'poc' &&
+                    historicVitals.metadata.caAgileId.replaceAll('[ud]', '').isNumber()) {
+                  vitalsFile.metadata.caAgileId = historicVitals.metadata.caAgileId
+                  break // exit from commit loop
+                }
+              } catch (MismatchedInputException e) {
+                log.error('Unable to read {}', commit.getHtmlUrl(), e)
+              }
+            }
+          }
+          if (vitalsFile.metadata.caAgileId.replaceAll('[ud]', '').isNumber()) {
+            // replace 'ud' from vitalsFile.metadata.caAgileId and check if what remains is a number.
+            def rallyWorkspaceId = vitalsFile.metadata.caAgileId.replaceAll('[ud]', '')
+            vitalsFile.metadata.caAgileId = rallyWorkspaceId.isNumber() ? "${rallyWorkspaceId}ud" : vitalsFile.metadata.caAgileId
+          }
+        } else {
+          vitalsFile = new VitalsFile()
+        }
+
+        /**
+         * Hard Code Values in Vitals.yaml
+         */
+        vitalsFile.apiVersion = 'v1'
+        vitalsFile.metadata.setAskId(askIds)
+
+        if (lookupProjectKey) {
+          vitalsFile.metadata.projectKey = pomParserService.readProjectKey(repo, '/pom.xml')
+        }
+        if (lookupProjectFriendlyName) {
+          vitalsFile.metadata.projectFriendlyName = pomParserService.readProjectFriendlyName(repo, '/pom.xml')
+        }
+
+        responseOptional = this.updateExistingVitalsFile(repo, vitalsFile)
+
+
+        CompletableFuture.supplyAsync(() -> {
+          cerberusScanService.cerberusScan(repo)
+        })
+
+      }
+      catch (IOException e) {
+        log.error("Unable to Update Vitals File in Repo = {}", repo.getHtmlUrl(), e)
+        responseOptional = Optional.empty()
+      }
+    } else {
+      log.warn("Unable to Update Vitals File in an Archived Repo = {}", repo.getHtmlUrl() as String)
+      responseOptional = Optional.empty()
+    }
+    return responseOptional
   }
 }

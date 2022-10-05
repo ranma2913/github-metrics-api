@@ -131,19 +131,19 @@ class UpdateVitalsFilesInOrg_Job extends Specification {
     updatedRepositories.size() <= repositories.size()
 
     where:
-    orgName | askId | overrideCaAgileId | caAgileId | lookupProjectKey | lookupProjectFriendlyName
-//    'riptide-deprecated-apps' | [null] | false             | 'do not use rally or use other system' | true             | true
-//    'riptide-devops'          | ['UHGWM110-017197'] | false             | ''                                     | false             | false
-//    'riptide-poc'             | [null]               | false             | 'do not use rally or use other system' | true             | true
-//    'riptide-team'            | ['UHGWM110-017197'] | false             | ''                                     | true             | true
-//    'riptide-team-microsite'  | ['UHGWM110-017197'] | false             | ''                                     | true             | true
-//    'iset'                    | ['UHGWM110-000465'] | false             | ''                                     | false            | false
-//    'UHC-Motion'              | ['UHGWM110-017808'] | false             | ''                                     | false            | false
-//    'DigitalMemberships'      | ['UHGWM110-027031'] | false             | ''                                     | false            | false
-//    'ACET-Automation'         | ['UHGWM110-014781'] | false             | ''                                     | false            | false
-//    'ACET-Middleware'         | ['UHGWM110-014781'] | false             | ''                                     | false            | false
-//    'acet-salesforce'         | ['UHGWM110-014781'] | false             | ''                                     | false            | false
-//    'PACT-Middleware'         | ['UHGWM110-028410'] | false             | ''                                     | false            | false
-//    'pact-salesforce'         | ['UHGWM110-028410'] | false             | ''                                     | false            | false
+    orgName                   | askId               | overrideCaAgileId | caAgileId                              | lookupProjectKey | lookupProjectFriendlyName
+    'riptide-deprecated-apps' | [null]              | false             | 'do not use rally or use other system' | true             | true
+    'riptide-devops'          | ['UHGWM110-017197'] | false             | ''                                     | false            | false
+    'riptide-poc'             | [null]              | false             | 'do not use rally or use other system' | true             | true
+    'riptide-team'            | ['UHGWM110-017197'] | false             | ''                                     | true             | true
+    'riptide-team-microsite'  | ['UHGWM110-017197'] | false             | ''                                     | true             | true
+    'iset'                    | ['UHGWM110-000465'] | false             | ''                                     | false            | false
+    'UHC-Motion'              | ['UHGWM110-017808'] | false             | ''                                     | false            | false
+    'DigitalMemberships'      | ['UHGWM110-027031'] | false             | ''                                     | false            | false
+    'ACET-Automation'         | ['UHGWM110-014781'] | false             | ''                                     | false            | false
+    'ACET-Middleware'         | ['UHGWM110-014781'] | false             | ''                                     | false            | false
+    'acet-salesforce'         | ['UHGWM110-014781'] | false             | ''                                     | false            | false
+    'PACT-Middleware'         | ['UHGWM110-028410'] | false             | ''                                     | false            | false
+    'pact-salesforce'         | ['UHGWM110-028410'] | false             | ''                                     | false            | false
   }
 }
