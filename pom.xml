@@ -28,8 +28,8 @@
     <spring-cloud.version>2021.0.4</spring-cloud.version><!-- Check for latest version: https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-dependencies -->
 
     <gmavenplus-plugin.version>2.0.0</gmavenplus-plugin.version><!-- Check the latest version: https://mvnrepository.com/artifact/org.codehaus.gmavenplus/gmavenplus-plugin -->
-    <spock.version>2.2-groovy-3.0</spock.version><!-- Check the latest version: https://mvnrepository.com/artifact/org.spockframework/spock-core -->
-    <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version><!-- Check the latest version: https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
+    <spock.version>2.3-groovy-3.0</spock.version><!-- Check the latest version: https://mvnrepository.com/artifact/org.spockframework/spock-core -->
+    <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version><!-- Check the latest version: https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
 
     <github-api.version>1.313</github-api.version><!-- Check for latest version: https://mvnrepository.com/artifact/org.kohsuke/github-api -->
 
