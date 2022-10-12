@@ -10,22 +10,34 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.7.3</version>
+    <version>2.7.4</version><!-- Check for latest version: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-parent -->
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
   <properties>
+    <main.basedir>${project.basedir}</main.basedir>
     <java.version>17</java.version>
-    <gmavenplus-plugin.version>1.13.1</gmavenplus-plugin.version><!-- Check the latest version: https://mvnrepository.com/artifact/org.codehaus.gmavenplus/gmavenplus-plugin -->
+    <maven.compiler.target>${java.version}</maven.compiler.target>
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.release>${java.version}</maven.compiler.release>
+    <file.encoding>UTF-8</file.encoding>
+    <project.build.sourceEncoding>${file.encoding}</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>${file.encoding}</project.reporting.outputEncoding>
+    <sonar.host.url>https://sonar.optum.com/</sonar.host.url>
+
+    <spring-cloud.version>2021.0.4</spring-cloud.version><!-- Check for latest version: https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-dependencies -->
+
+    <gmavenplus-plugin.version>2.0.0</gmavenplus-plugin.version><!-- Check the latest version: https://mvnrepository.com/artifact/org.codehaus.gmavenplus/gmavenplus-plugin -->
     <spock.version>2.2-groovy-3.0</spock.version><!-- Check the latest version: https://mvnrepository.com/artifact/org.spockframework/spock-core -->
     <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version><!-- Check the latest version: https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
 
-    <github-api.version>1.308</github-api.version><!-- Check for latest version: https://mvnrepository.com/artifact/org.kohsuke/github-api -->
+    <github-api.version>1.313</github-api.version><!-- Check for latest version: https://mvnrepository.com/artifact/org.kohsuke/github-api -->
 
     <!-- Riptide Dependency Versions -->
-    <rest-clients.version>2.0.1</rest-clients.version><!-- Check for latest version: https://repo1.uhc.com/artifactory/UHG-Releases/com/optum/riptide/http/rest-clients/ -->
+    <rest-clients.version>2.1.0</rest-clients.version><!-- Check for latest version: https://repo1.uhc.com/artifactory/UHG-Releases/com/optum/riptide/http/rest-clients/ -->
     <riptide-memory-utils.version>1.0.7</riptide-memory-utils.version><!-- Check for latest version: https://repo1.uhc.com/artifactory/UHG-Releases/com/optum/riptide/utils/riptide-memory-utils/ -->
     <graceful-shutdown.version>1.2.0</graceful-shutdown.version><!-- Check for latest version: https://repo1.uhc.com/artifactory/UHG-Releases/com/optum/riptide/springboot/graceful-shutdown/ -->
+
   </properties>
 
   <dependencies>
