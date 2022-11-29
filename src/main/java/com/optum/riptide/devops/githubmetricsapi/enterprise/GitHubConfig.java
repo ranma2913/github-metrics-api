@@ -14,15 +14,15 @@ import java.io.IOException;
 public class GitHubConfig {
   @Value("${github.enterprise.endpoint}")
   private String githubEnterpriseEndpoint;
-
   @Value("${github.enterprise.default-org}")
   private String githubEnterpriseDefaultOrg;
+
+  @Value("${credentials_MS_ID}")
+  private String githubId;
 
   @Value("${credentials_GIT_TOKEN}")
   private String githubToken;
 
-  @Value("${credentials_MS_ID}")
-  private String githubId;
 
   @Bean
   public GitHub githubEnterprise() throws IOException {
