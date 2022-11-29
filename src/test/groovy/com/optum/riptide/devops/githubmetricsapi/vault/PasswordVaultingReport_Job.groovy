@@ -108,6 +108,4 @@ class PasswordVaultingReport_Job extends Specification {
 //    'ACET-Automation'         | 'mysql and vault report' | 'ACET-Automation mysql and vault report.xlsx'
   }
 
-  def hasVault() {}
-
 }
