@@ -24,8 +24,8 @@ class CodeQLReport_Job extends Specification {
   @Autowired
   CodeQLService codeQLService
 
-  @Unroll("Create csv of repos missing vitals.yaml for org = #orgName")
-  def "Create csv of repos missing vitals.yaml"() {
+  @Unroll("Create csv of repos Code QL repo for org = #orgName")
+  def "Create csv of repos Code QL status"() {
     given:
     def csvHeadRow = ['Repository', 'Repo URL', 'Default Branch', 'Code QL Merge status'] // Header Row
     def csvData = []
@@ -58,6 +58,6 @@ class CodeQLReport_Job extends Specification {
 //    'riptide-deprecated-apps' | 'Needs vitals.yaml' | 'riptide-deprecated-apps_missing_vitals.xlsx'
 //    'riptide-devops'          | 'Needs vitals.yaml' | 'riptide-devops_missing_vitals.xlsx'
 //    'riptide-poc'             | 'Needs vitals.yaml' | 'riptide-poc_missing_vitals.xlsx'
-    'riptide-team' | 'Needs vitals.yaml' | 'riptide-team_codeQL_report.xlsx'
+    'riptide-team' | 'Needs code QL file' | 'riptide-team_codeQL_report.xlsx'
   }
 }
