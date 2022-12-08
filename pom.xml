@@ -30,7 +30,7 @@
     <gmavenplus-plugin.version>2.0.0</gmavenplus-plugin.version><!-- Check the latest version: https://mvnrepository.com/artifact/org.codehaus.gmavenplus/gmavenplus-plugin -->
     <spock.version>2.3-groovy-3.0</spock.version><!-- Check the latest version: https://mvnrepository.com/artifact/org.spockframework/spock-core -->
     <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version><!-- Check the latest version: https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
-
+    <dependency-check-maven.version>7.4.0</dependency-check-maven.version><!-- Check the latest version: https://mvnrepository.com/artifact/org.owasp/dependency-check-maven -->
     <github-api.version>1.313</github-api.version><!-- Check for latest version: https://mvnrepository.com/artifact/org.kohsuke/github-api -->
 
     <!-- Riptide Dependency Versions -->
@@ -95,6 +95,11 @@
       <groupId>org.kohsuke</groupId>
       <artifactId>github-api</artifactId>
       <version>${github-api.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.owasp</groupId>
+      <artifactId>dependency-check-maven</artifactId>
+      <version>${dependency-check-maven.version}</version>
     </dependency>
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
@@ -311,7 +316,7 @@
       <plugin>
         <groupId>org.owasp</groupId>
         <artifactId>dependency-check-maven</artifactId>
-        <version>7.3.2</version>
+        <version>${dependency-check-maven.version}</version>
         <configuration>
           <skipProvidedScope>true</skipProvidedScope>
           <skipRuntimeScope>true</skipRuntimeScope>
