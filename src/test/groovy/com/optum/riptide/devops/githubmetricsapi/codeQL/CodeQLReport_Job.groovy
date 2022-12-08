@@ -3,6 +3,7 @@ package com.optum.riptide.devops.githubmetricsapi.codeQL
 import com.optum.riptide.devops.githubmetricsapi.utils.CellProps
 import com.optum.riptide.devops.githubmetricsapi.utils.FileWriterUtil
 import groovy.util.logging.Slf4j
+import org.apache.poi.ss.usermodel.CellType
 import org.kohsuke.github.GHOrganization
 import org.kohsuke.github.GHRepository
 import org.kohsuke.github.GitHub
@@ -37,16 +38,15 @@ class CodeQLReport_Job extends Specification {
     def "Create csv of repos Code QL status"() {
         given:
         List<CellProps> headerRow = [new CellProps('Repository', 'String'),
-                                     new CellProps('Repo URL', 'String'),
                                      new CellProps('Default Branch', 'String'),
                                      new CellProps('Code QL Merge status', 'Boolean'),
-                                     new CellProps('critical', 'String'),
-                                     new CellProps('high', 'String'),
-                                     new CellProps('medium', 'String'),
-                                     new CellProps('low', 'String'),
-                                     new CellProps('severity Error Count', 'String'),
-                                     new CellProps('severity Note Count', 'String'),
-                                     new CellProps('severity Warning Count', 'String'),
+                                     new CellProps('critical', CellType.NUMERIC),
+                                     new CellProps('high', CellType.NUMERIC),
+                                     new CellProps('medium', CellType.NUMERIC),
+                                     new CellProps('low', CellType.NUMERIC),
+                                     new CellProps('severity Error Count', CellType.NUMERIC),
+                                     new CellProps('severity Note Count', CellType.NUMERIC),
+                                     new CellProps('severity Warning Count', CellType.NUMERIC),
                                      new CellProps('Additional Notes', 'String'),]
         GHOrganization org = githubEnterprise.getOrganization(orgName)
         List<GHRepository> repositories = org.listRepositories(100).toList()
@@ -77,17 +77,16 @@ class CodeQLReport_Job extends Specification {
                 repositories.parallelStream()
                         .map(repo -> {
                             Map<String, Integer> codeSeverityCounts = getCodeQLIssueCount(repo, orgName)
-                            List<CellProps> dataRow = [new CellProps("${(repo.getFullName()?.trim() ?: "${repo.getOwner()}/${repo.getName()}")}", 'String'),
-                                                       new CellProps(repo.getHtmlUrl() as String, 'URL'),
+                            List<CellProps> dataRow = [new CellProps(repo.getHtmlUrl() as String, "${(repo.getFullName()?.trim() ?: "${repo.getOwner()}/${repo.getName()}")}", 'URL'),
                                                        new CellProps(repo.getDefaultBranch() as String, 'String'),
                                                        new CellProps(codeQLService.isCodeQLFileMerged(repo) as String, 'String'),
-                                                       new CellProps(codeSeverityCounts.get("critical") as String, 'String'),
-                                                       new CellProps(codeSeverityCounts.get("high") as String, 'String'),
-                                                       new CellProps(codeSeverityCounts.get("medium") as String, 'String'),
-                                                       new CellProps(codeSeverityCounts.get("low") as String, 'String'),
-                                                       new CellProps(codeSeverityCounts.get("severity Error Count") as String, 'String'),
-                                                       new CellProps(codeSeverityCounts.get("severity Note Count") as String, 'String'),
-                                                       new CellProps(codeSeverityCounts.get("severity Warning Count") as String, 'String'),
+                                                       new CellProps(codeSeverityCounts.get("critical") as String, CellType.NUMERIC),
+                                                       new CellProps(codeSeverityCounts.get("high") as String, CellType.NUMERIC),
+                                                       new CellProps(codeSeverityCounts.get("medium") as String, CellType.NUMERIC),
+                                                       new CellProps(codeSeverityCounts.get("low") as String, CellType.NUMERIC),
+                                                       new CellProps(codeSeverityCounts.get("severity Error Count") as String, CellType.NUMERIC),
+                                                       new CellProps(codeSeverityCounts.get("severity Note Count") as String, CellType.NUMERIC),
+                                                       new CellProps(codeSeverityCounts.get("severity Warning Count") as String, CellType.NUMERIC),
                                                        new CellProps(codeSeverityCounts.get("Additional Notes") as String, 'String')]
 
                             // def csvRow = [repo.getFullName(), repo.getHtmlUrl(), repo.getDefaultBranch(), codeQLService.isCodeQLFileMerged(repo)]
