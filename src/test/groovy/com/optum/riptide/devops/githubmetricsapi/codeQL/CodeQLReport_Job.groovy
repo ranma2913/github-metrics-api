@@ -80,13 +80,13 @@ class CodeQLReport_Job extends Specification {
                             List<CellProps> dataRow = [new CellProps(repo.getHtmlUrl() as String, "${(repo.getFullName()?.trim() ?: "${repo.getOwner()}/${repo.getName()}")}", 'URL'),
                                                        new CellProps(repo.getDefaultBranch() as String, 'String'),
                                                        new CellProps(codeQLService.isCodeQLFileMerged(repo) as String, 'String'),
-                                                       new CellProps(codeSeverityCounts.get("critical") as String, CellType.NUMERIC),
-                                                       new CellProps(codeSeverityCounts.get("high") as String, CellType.NUMERIC),
-                                                       new CellProps(codeSeverityCounts.get("medium") as String, CellType.NUMERIC),
-                                                       new CellProps(codeSeverityCounts.get("low") as String, CellType.NUMERIC),
-                                                       new CellProps(codeSeverityCounts.get("severity Error Count") as String, CellType.NUMERIC),
-                                                       new CellProps(codeSeverityCounts.get("severity Note Count") as String, CellType.NUMERIC),
-                                                       new CellProps(codeSeverityCounts.get("severity Warning Count") as String, CellType.NUMERIC),
+                                                       new CellProps(codeSeverityCounts.get("critical") as Integer, CellType.NUMERIC),
+                                                       new CellProps(codeSeverityCounts.get("high") as Integer, CellType.NUMERIC),
+                                                       new CellProps(codeSeverityCounts.get("medium") as Integer, CellType.NUMERIC),
+                                                       new CellProps(codeSeverityCounts.get("low") as Integer, CellType.NUMERIC),
+                                                       new CellProps(codeSeverityCounts.get("severity Error Count") as Integer, CellType.NUMERIC),
+                                                       new CellProps(codeSeverityCounts.get("severity Note Count") as Integer, CellType.NUMERIC),
+                                                       new CellProps(codeSeverityCounts.get("severity Warning Count") as Integer, CellType.NUMERIC),
                                                        new CellProps(codeSeverityCounts.get("Additional Notes") as String, 'String')]
 
                             // def csvRow = [repo.getFullName(), repo.getHtmlUrl(), repo.getDefaultBranch(), codeQLService.isCodeQLFileMerged(repo)]

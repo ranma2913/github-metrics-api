@@ -5,29 +5,29 @@ import org.apache.poi.ss.usermodel.CellType
 
 @Slf4j
 class CellProps {
-  String value
-  String displayValue
+  def value
+  def displayValue
   String cellType
 
-  CellProps(String value, String displayValue, CellType cellType) {
+  CellProps(def value, def displayValue, CellType cellType) {
     this.value = value
     this.displayValue = displayValue
     this.cellType = cellType.toString()
   }
 
-  CellProps(String value, String displayValue, String cellType) {
+  CellProps(def value, def displayValue, String cellType) {
     this.value = value
     this.displayValue = displayValue
     this.cellType = cellType
   }
 
-  CellProps(String value, CellType cellType) {
+  CellProps(def value, CellType cellType) {
     this.value = value
     this.displayValue = value
     this.cellType = cellType.toString()
   }
 
-  CellProps(String value, String cellType) {
+  CellProps(def value, String cellType) {
     this.value = value
     this.displayValue = value
     this.cellType = cellType
