@@ -1,2 +1,0 @@
-*.sql.xz filter=lfs diff=lfs merge=lfs -text
-*.image.xz filter=lfs diff=lfs merge=lfs -text
