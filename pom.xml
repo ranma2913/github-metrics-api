@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.7.4</version><!-- Check for latest version: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-parent -->
+    <version>2.7.6</version><!-- Check for latest version: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-parent -->
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
@@ -132,7 +132,7 @@
     <dependency>
       <groupId>com.networknt</groupId>
       <artifactId>json-schema-validator</artifactId>
-      <version>1.0.73</version>
+      <version>1.0.75</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
