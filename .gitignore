@@ -12,12 +12,8 @@ logs/
 *.log*
 .git/
 
-
 ############################################
 # Build Stuff:
-mvnw
-mvnw.cmd
-.mvn/
 gradlew
 gradlew.bat
 .gradle/
@@ -33,11 +29,11 @@ pom.xml.versionsBackup
 # infrastructure ignores
 infrastructure/**/*config.y*ml
 infrastructure/**/*output.y*ml
+.rewrite-cache/
 
 ############################################
 # IDE/Editor Files
 .tern-project
-.factorypath
 .settings/
 Servers/*
 .metadata/*
@@ -45,6 +41,7 @@ Servers/*
 .classpath
 .project
 .vscode/
+.factorypath
 *.eml
 *.iml
 .idea/*
