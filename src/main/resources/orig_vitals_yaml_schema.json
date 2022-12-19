@@ -12,7 +12,7 @@
           "metadata": {
             "askId": "UHGWM###-######",
             "caAgileId": "poc",
-            "projectKey": "com.optum.yourApp.yourComponent",
+            "projectKey": "com.ranma2913.yourApp.yourComponent",
             "projectFriendlyName": "YourApp-SomeComponent",
             "componentType": "code",
             "targetQG": "GATE_00"
@@ -44,7 +44,7 @@
             {
               "askId": "UHGWM###-######",
               "caAgileId": "poc",
-              "projectKey": "com.optum.yourApp.yourComponent",
+              "projectKey": "com.ranma2913.yourApp.yourComponent",
               "projectFriendlyName": "YourApp-SomeComponent",
               "componentType": "code",
               "targetQG": "GATE_00"
@@ -86,7 +86,7 @@
               "description": "A unique Project Identifier",
               "default": "",
               "examples": [
-                "com.optum.yourApp.yourComponent"
+                "com.ranma2913.yourApp.yourComponent"
               ]
             },
             "projectFriendlyName": {
@@ -131,7 +131,7 @@
           "metadata": {
             "askId": "UHGWM###-######",
             "caAgileId": "poc",
-            "projectKey": "com.optum.yourApp.yourComponent",
+            "projectKey": "com.ranma2913.yourApp.yourComponent",
             "projectFriendlyName": "YourApp-SomeComponent",
             "componentType": "code",
             "targetQG": "GATE_00"
@@ -156,7 +156,7 @@
             {
               "askId": "[\"AIDE_######\"]",
               "caAgileId": "poc",
-              "projectKey": "com.optum.yourApp.yourComponent",
+              "projectKey": "com.ranma2913.yourApp.yourComponent",
               "projectFriendlyName": "YourApp-SomeComponent",
               "componentType": "code",
               "targetQG": "GATE_00"

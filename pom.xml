@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.optum.riptide.devops</groupId>
+  <groupId>com.ranma2913.riptide.devops</groupId>
   <artifactId>github-metrics-api</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
@@ -23,7 +23,6 @@
     <file.encoding>UTF-8</file.encoding>
     <project.build.sourceEncoding>${file.encoding}</project.build.sourceEncoding>
     <project.reporting.outputEncoding>${file.encoding}</project.reporting.outputEncoding>
-    <sonar.host.url>https://sonar.optum.com/</sonar.host.url>
 
     <spring-cloud.version>2021.0.5</spring-cloud.version><!-- Check for latest version: https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-dependencies -->
 
@@ -33,19 +32,13 @@
     <dependency-check-maven.version>7.4.0</dependency-check-maven.version><!-- Check the latest version: https://mvnrepository.com/artifact/org.owasp/dependency-check-maven -->
 
     <github-api.version>1.313</github-api.version><!-- Check for latest version: https://mvnrepository.com/artifact/org.kohsuke/github-api -->
-
-    <!-- Riptide Dependency Versions -->
-    <rest-clients.version>2.1.0</rest-clients.version><!-- Check for latest version: https://repo1.uhc.com/artifactory/UHG-Releases/com/optum/riptide/http/rest-clients/ -->
-    <riptide-memory-utils.version>1.0.7</riptide-memory-utils.version><!-- Check for latest version: https://repo1.uhc.com/artifactory/UHG-Releases/com/optum/riptide/utils/riptide-memory-utils/ -->
-    <graceful-shutdown.version>1.2.0</graceful-shutdown.version><!-- Check for latest version: https://repo1.uhc.com/artifactory/UHG-Releases/com/optum/riptide/springboot/graceful-shutdown/ -->
-
   </properties>
 
   <dependencies>
     <dependency>
-      <groupId>com.optum.riptide.http</groupId>
-      <artifactId>rest-clients</artifactId>
-      <version>${rest-clients.version}</version>
+      <groupId>org.kohsuke</groupId>
+      <artifactId>github-api</artifactId>
+      <version>${github-api.version}</version>
     </dependency>
 
     <dependency>
@@ -94,9 +87,8 @@
       <artifactId>groovy-xml</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kohsuke</groupId>
-      <artifactId>github-api</artifactId>
-      <version>${github-api.version}</version>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
     </dependency>
     <dependency>
       <groupId>org.owasp</groupId>

@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="GithubMetricsApiApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="ACTIVE_PROFILES" />
+    <module name="github-metrics-api" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.ranma2913.riptide.devops.githubmetricsapi.GithubMetricsApiApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

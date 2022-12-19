@@ -8,7 +8,7 @@ To use this Application you need to configure a Github Personal GIT_TOKEN and MS
 - credentials_MS_ID
 - credentials_GIT_TOKEN
 
-1. Login to [https://github.optum.com/settings/tokens](https://github.optum.com/settings/tokens)
+1. Login to [https://github.ranma2913.com/settings/tokens](https://github.ranma2913.com/settings/tokens)
 2. Create or use an existing PAT
 3. Ensure you have at least the following scopes: `repo`, `workflow`, `read:org`, `write:discussion`
    ![github-pat-scopes.png](.docs/images/github-pat-scopes.png)

@@ -3,7 +3,7 @@
   "$id": "http://example.com/example.json",
   "type": "object",
   "title": "HCP Vitals file schema.",
-  "description": "Read more here: https://github.optum.com/pages/optum-engineering-experience/HCP-Documentation/engineering-excellence/overview",
+  "description": "Read more here: https://github.ranma2913.com/pages/ranma2913-engineering-experience/HCP-Documentation/engineering-excellence/overview",
   "oneOf": [
     {
       "examples": [
@@ -15,7 +15,7 @@
               "UHGWM###-######"
             ],
             "caAgileId": "poc",
-            "projectKey": "com.optum.yourapp.yourcomponent",
+            "projectKey": "com.ranma2913.yourapp.yourcomponent",
             "projectFriendlyName": "yourapp-yourcomponent",
             "componentType": "code",
             "targetQG": "GATE_00"
@@ -26,7 +26,7 @@
           "metadata": {
             "askId": "AIDE_#######",
             "caAgileId": "poc",
-            "projectKey": "com.optum.yourapp.yourcomponent",
+            "projectKey": "com.ranma2913.yourapp.yourcomponent",
             "projectFriendlyName": "yourapp-yourcomponent",
             "componentType": "code",
             "targetQG": "GATE_00"
@@ -37,7 +37,7 @@
           "metadata": {
             "askId": null,
             "caAgileId": "poc",
-            "projectKey": "com.optum.yourapp.yourcomponent",
+            "projectKey": "com.ranma2913.yourapp.yourcomponent",
             "projectFriendlyName": "yourapp-yourcomponent",
             "componentType": "code",
             "targetQG": "GATE_00"
@@ -75,7 +75,7 @@
                 "UHGWM###-######"
               ],
               "caAgileId": "poc",
-              "projectKey": "com.optum.yourapp.yourcomponent",
+              "projectKey": "com.ranma2913.yourapp.yourcomponent",
               "projectFriendlyName": "yourapp-yourcomponent",
               "componentType": "code",
               "targetQG": "GATE_00"
@@ -83,7 +83,7 @@
             {
               "askId": "AIDE_#######",
               "caAgileId": "poc",
-              "projectKey": "com.optum.yourapp.yourcomponent",
+              "projectKey": "com.ranma2913.yourapp.yourcomponent",
               "projectFriendlyName": "yourapp-yourcomponent",
               "componentType": "code",
               "targetQG": "GATE_00"
@@ -91,7 +91,7 @@
             {
               "askId": null,
               "caAgileId": "poc",
-              "projectKey": "com.optum.yourapp.yourcomponent",
+              "projectKey": "com.ranma2913.yourapp.yourcomponent",
               "projectFriendlyName": "yourapp-yourcomponent",
               "componentType": "code",
               "targetQG": "GATE_00"
@@ -114,7 +114,7 @@
                 "null"
               ],
               "title": "askId (AIDE ID)",
-              "description": "askId: Enter your ASK ID (examples: UHGWM110-006715 or AIDE_0074671). To look up your ASK ID, you can go here: [AIDE Portal](https://aide.optum.com/) and enter the name of your application in the search box. You will then see a field 'ASK Global Id' where you will see the application's ASK ID. If your project is a proof of concept and does not yet have an ASK ID, you can use 'poc' until your project requests an ASK ID. If the contents of your repository are not associated with an ASK ID, and never will be (example: documentation micro-site that is not application specific, such as appsec.optum.com), you may use the yaml file standard for null values (either null [no quotes] or the single character ~ [no quotes]. If your repository contains code for multiple ASK IDs, use a yaml file list to list the related ASK IDs.",
+              "description": "askId: Enter your ASK ID (examples: UHGWM110-006715 or AIDE_0074671). To look up your ASK ID, you can go here: [AIDE Portal](https://aide.ranma2913.com/) and enter the name of your application in the search box. You will then see a field 'ASK Global Id' where you will see the application's ASK ID. If your project is a proof of concept and does not yet have an ASK ID, you can use 'poc' until your project requests an ASK ID. If the contents of your repository are not associated with an ASK ID, and never will be (example: documentation micro-site that is not application specific, such as appsec.ranma2913.com), you may use the yaml file standard for null values (either null [no quotes] or the single character ~ [no quotes]. If your repository contains code for multiple ASK IDs, use a yaml file list to list the related ASK IDs.",
               "default": "",
               "examples": [
                 "UHGWM###-######",
@@ -144,10 +144,10 @@
               "description": "projectKey: This should be unique across UHG. If you use Maven then this would be your groupId + colon + artifactId. It is important that you use the same key that is used for your sonar scans. Look at your project page in Sonar and find the \"key\". This is what you should use here. If your repository is not associated with a UHG project, enter a null value here. ",
               "default": "",
               "examples": [
-                "com.optum.yourapp:yourcomponent",
-                "com.optum.ecm:ecm-webapp",
-                "com.optum.ecm:ecm-microservice",
-                "com.optum.ecm:ecm-adminui"
+                "com.ranma2913.yourapp:yourcomponent",
+                "com.ranma2913.ecm:ecm-webapp",
+                "com.ranma2913.ecm:ecm-microservice",
+                "com.ranma2913.ecm:ecm-adminui"
               ]
             },
             "projectFriendlyName": {
@@ -182,7 +182,7 @@
               "$id": "#/properties/metadata/properties/targetQG",
               "type": "string",
               "title": "targetQG (Sonar Quality Gate EOY Target)",
-              "description": "This is the Sonar Quality Gate that your team has targeted to achieve by the end of the current year. @see https://sonar.optum.com/quality_gates. Use GATE_EXEMPT for assets (documentation, policy, other) that do not contain application source code or scripts and are not subject to Quality Gating or are not required to utilized SonarQube for quality assurance. If your project is subject to SonarQube quality scanning, but you have not utilized SonarQube, use GATE_00 for now. See Sonar Quality Gates to review the Quality Gates in Sonar.",
+              "description": "This is the Sonar Quality Gate that your team has targeted to achieve by the end of the current year. @see https://sonar.ranma2913.com/quality_gates. Use GATE_EXEMPT for assets (documentation, policy, other) that do not contain application source code or scripts and are not subject to Quality Gating or are not required to utilized SonarQube for quality assurance. If your project is subject to SonarQube quality scanning, but you have not utilized SonarQube, use GATE_00 for now. See Sonar Quality Gates to review the Quality Gates in Sonar.",
               "enum": [
                 "GATE_00",
                 "GATE_01",
